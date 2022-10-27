@@ -1,14 +1,16 @@
 package game;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -25,6 +27,7 @@ import game.decks.MainDeck;
 import player.Player;
 
 public class GameLogicTest {
+
     Player a;
     Player b;
     DiscardPile discardPile;
@@ -34,7 +37,6 @@ public class GameLogicTest {
     Socket connectionSocket;
     Server server;
     Client client;
-    Message m;
 
     @BeforeEach
     public void initAllCardsTests() throws Exception {
@@ -66,8 +68,19 @@ public class GameLogicTest {
         gameLogic.getDrawPile().shuffle();
         gameLogic.dealCards();
 
-        assertEquals(8, a.getHand().getCurrentSize());
-        assertEquals(8, b.getHand().getCurrentSize());
+        assertEquals(7, a.getHand().getCurrentSize());
+        assertEquals(7, b.getHand().getCurrentSize());
+
+    }
+
+    @Test
+    public void deal1DefuseCardToAllPlayers() {
+        gameLogic.dealDefuseCards();
+
+        assertEquals(1, a.getHand().getCurrentSize());
+        assertEquals(1, b.getHand().getCurrentSize());
+        assertEquals("Defuse", a.getHand().getCards().get(0).getName());
+        assertEquals("Defuse", b.getHand().getCards().get(0).getName());
 
     }
 
@@ -75,10 +88,7 @@ public class GameLogicTest {
     public void randomPlayerStarts() { // This test is a bit wierd as you could get the same value as it is "Random"
                                        // and testing randomness seams kinda pointless as with unit testing we want to
                                        // test a value vs a expected value
-        gameLogic.getServer().getPlayers().add(a);
-        gameLogic.getServer().getPlayers().add(b);
-        // assertNotEquals(gameLogic.randomPlayerStarts(),
-        // gameLogic.randomPlayerStarts());
+
     }
 
     @Test
@@ -100,9 +110,15 @@ public class GameLogicTest {
     @Test
     public void playerPlaysMultipleCards() throws IOException, InterruptedException {
         gameLogic.getDrawPile().populateDeck(2, expansions);
+        b.getHand().add(CardsFactory.createCard("Attack"), 0);
+        b.getHand().add(CardsFactory.createCard("Skip"), 1);
         a.getHand().add(CardsFactory.createCard("SeeTheFuture"), 0);
         a.getHand().add(CardsFactory.createCard("Shuffle"), 0);
-        a.getHand().add(CardsFactory.createCard("Shuffle"), 0);
+        a.getHand().add(CardsFactory.createCard("TacoCat"), 0);
+        a.getHand().add(CardsFactory.createCard("TacoCat"), 0);
+        a.getHand().add(CardsFactory.createCard("Cattermelon"), 0);
+        a.getHand().add(CardsFactory.createCard("Cattermelon"), 0);
+        a.getHand().add(CardsFactory.createCard("Cattermelon"), 0);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> Assertions.assertDoesNotThrow(() -> {
             gameLogic.startGame(a.getId());
@@ -110,19 +126,36 @@ public class GameLogicTest {
 
         executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
         client.getOutToServer().writeObject("Shuffle");
-        executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        TimeUnit.SECONDS.sleep(1);
         assertEquals(1, gameLogic.getCurrentPlayer().getNumberOfTurns());
 
-        executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        TimeUnit.SECONDS.sleep(1);
         client.getOutToServer().writeObject("SeeTheFuture");
-        executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        TimeUnit.SECONDS.sleep(1);
         assertEquals(1, gameLogic.getCurrentPlayer().getNumberOfTurns());
 
-        executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
-        client.getOutToServer().writeObject("Shuffle");
-        executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        client.getOutToServer().writeObject("TacoCat 2 0");
         assertEquals(1, gameLogic.getCurrentPlayer().getNumberOfTurns());
+        TimeUnit.SECONDS.sleep(1);
+        client.getOutToServer().writeObject("0");
+        TimeUnit.SECONDS.sleep(1);
+        assertEquals(true, gameLogic.getCurrentPlayer().getHand().containsCardWithName("Attack"));
+
+        client.getOutToServer().writeObject("Cattermelon 3 0");
+        assertEquals(1, gameLogic.getCurrentPlayer().getNumberOfTurns());
+        TimeUnit.SECONDS.sleep(1);
+        client.getOutToServer().writeObject("Skip");
+        TimeUnit.SECONDS.sleep(1);
+        assertEquals(true, gameLogic.getCurrentPlayer().getHand().containsCardWithName("Skip"));
         executor.shutdown();
     }
 
+    @Test
+    public void notifyAllPlayersThatWeHaveAWinner() throws InterruptedException {
+        b.setExploded(true);
+        assertEquals(true, gameLogic.checkWinner(a, 1));
+
+    }
+
+    
 }

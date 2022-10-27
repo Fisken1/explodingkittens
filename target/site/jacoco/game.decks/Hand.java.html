@@ -14,10 +14,10 @@ public class Hand implements Deck {
 <span class="fc" id="L14">	}</span>
 
 	public boolean containsCardWithName(String name) {
-<span class="pc bpc" id="L17" title="1 of 2 branches missed.">		for (Card card : this.Cards) {</span>
-<span class="nc bnc" id="L18" title="All 2 branches missed.">			if (card.getName().equals(name))</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">		for (Card card : this.Cards) {</span>
+<span class="pc bpc" id="L18" title="1 of 2 branches missed.">			if (card.getName().equals(name))</span>
 <span class="nc" id="L19">				return true;</span>
-<span class="nc" id="L20">		}</span>
+		}
 <span class="fc" id="L21">		return false;</span>
 	}
 
@@ -25,7 +25,7 @@ public class Hand implements Deck {
 <span class="nc" id="L25">		ArrayList&lt;Choice&gt; cardsInHand = new ArrayList&lt;Choice&gt;();</span>
 <span class="nc bnc" id="L26" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
 <span class="nc" id="L27">			cardsInHand.add(new Choice(card.getName(), &quot;&quot;));</span>
-<span class="nc" id="L28">		}</span>
+		}
 <span class="nc" id="L29">		return cardsInHand;</span>
 	}
 
@@ -33,7 +33,7 @@ public class Hand implements Deck {
 <span class="nc" id="L33">		List&lt;String&gt; cardsInHand = new ArrayList&lt;String&gt;();</span>
 <span class="nc bnc" id="L34" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
 <span class="nc" id="L35">			cardsInHand.add(card.getName());</span>
-<span class="nc" id="L36">		}</span>
+		}
 <span class="nc" id="L37">		return cardsInHand;</span>
 	}
 
@@ -45,7 +45,7 @@ public class Hand implements Deck {
 <span class="nc bnc" id="L45" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
 <span class="nc bnc" id="L46" title="All 2 branches missed.">			if (card.getName().equals(name))</span>
 <span class="nc" id="L47">				return card;</span>
-<span class="nc" id="L48">		}</span>
+		}
 <span class="nc" id="L49">		return null;</span>
 	}
 
@@ -53,7 +53,7 @@ public class Hand implements Deck {
 <span class="nc bnc" id="L53" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
 <span class="nc bnc" id="L54" title="All 2 branches missed.">			if (card.isAbleToTarget())</span>
 <span class="nc" id="L55">				return true;</span>
-<span class="nc" id="L56">		}</span>
+		}
 <span class="nc" id="L57">		return false;</span>
 	}
 
@@ -81,4 +81,4 @@ public class Hand implements Deck {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

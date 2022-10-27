@@ -21,25 +21,25 @@ public class Defuse implements Card {
 <span class="fc" id="L21">		this.ableToTarget = false;</span>
 <span class="fc" id="L22">	}</span>
 
-
+	@Override
 	public boolean isAbleToTarget() {
 <span class="nc" id="L26">		return ableToTarget;</span>
 	}
 
-
+	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 <span class="nc" id="L31">		discardPile.add(this, 0);</span>
 <span class="nc" id="L32">		player.getHand().remove(this);</span>
 
 <span class="nc" id="L34">		Card explodingKitten = player.getHand().returnSpecificCardByName(&quot;ExplodingKitten&quot;);</span>
 <span class="nc" id="L35">		player.sendMessage(MessageFactory.createMessage(</span>
-				&quot;Oh no you drew a Exploding kitten, but you used a defuse card!&quot;, null, 0));
+<span class="nc" id="L36">				&quot;Oh no you drew a Exploding kitten, but you used a defuse card!&quot;, null, 0));</span>
 
 <span class="nc" id="L38">		Message question = MessageFactory.createMessage(</span>
-				&quot;Where in the deck do you wish to place the ExplodingKitten? \n&quot;,
+<span class="nc" id="L39">				&quot;Where in the deck do you wish to place the ExplodingKitten? \n&quot;,</span>
 <span class="nc" id="L40">				new ArrayList&lt;Choice&gt;(Arrays.asList(new Choice(&quot;0&quot;, &quot;top of the deck&quot;),</span>
-<span class="nc" id="L41">						new Choice(String.valueOf(drawPile.getCurrentSize()), &quot;bottom of the deck&quot;))),</span>
-				1);
+<span class="nc" id="L41">						new Choice(String.valueOf(drawPile.getCurrentSize() + 1), &quot;bottom of the deck&quot;))),</span>
+<span class="nc" id="L42">				1);</span>
 
 <span class="nc" id="L44">		boolean validOption = false;</span>
 <span class="nc bnc" id="L45" title="All 2 branches missed.">		while (!validOption) {</span>
@@ -48,38 +48,38 @@ public class Defuse implements Card {
 <span class="nc" id="L48">				player.sendMessage(question);</span>
 <span class="nc" id="L49">				int positionInDeck = Integer.valueOf(player.readMessage(false)).intValue();</span>
 <span class="nc bnc" id="L50" title="All 2 branches missed.">				if (positionInDeck &gt;= Integer.valueOf(question.getChoices().get(0).getChoice())</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">						&amp;&amp; positionInDeck &lt;= Integer</span>
-<span class="nc" id="L52">								.valueOf(question.getChoices().get(1).getChoice())) {</span>
+<span class="nc" id="L51">						&amp;&amp; positionInDeck &lt;= Integer</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">								.valueOf(question.getChoices().get(1).getChoice())) {</span>
 <span class="nc" id="L53">					drawPile.add(explodingKitten, positionInDeck);</span>
 <span class="nc" id="L54">					player.getHand().remove(explodingKitten);</span>
 <span class="nc" id="L55">					player.sendMessage(</span>
 <span class="nc" id="L56">							MessageFactory.createMessage(</span>
-									&quot;You have placed the Exploding kitten in position &quot; + positionInDeck, null, 0));
+<span class="nc" id="L57">									&quot;You have placed the Exploding kitten in position &quot; + positionInDeck, null, 0));</span>
 <span class="nc" id="L58">					validOption = true;</span>
-				} else {
+<span class="nc" id="L59">				} else {</span>
 <span class="nc" id="L60">					player.sendMessage(</span>
 <span class="nc" id="L61">							MessageFactory.createMessage(</span>
-									&quot;NotValid&quot;, null, 0));
+<span class="nc" id="L62">									&quot;NotValid&quot;, null, 0));</span>
 				}
 <span class="nc" id="L64">			} catch (final NumberFormatException e) {</span>
 <span class="nc" id="L65">				player.sendMessage(</span>
 <span class="nc" id="L66">						MessageFactory.createMessage(</span>
-								&quot;You did not enter a valid position!&quot;, null, 0));
-<span class="nc" id="L68">			}</span>
+<span class="nc" id="L67">								&quot;You did not enter a valid position!&quot;, null, 0));</span>
+			}
 
 		}
 <span class="nc" id="L71">		return target;</span>
 	}
 
-
+	@Override
 	public String getName() {
 <span class="fc" id="L76">		return this.name;</span>
 	}
 
-
+	@Override
 	public String getDescription() {
 <span class="nc" id="L81">		return this.description;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

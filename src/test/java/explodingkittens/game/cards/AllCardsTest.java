@@ -2,22 +2,15 @@ package game.cards;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import communication.messages.Message;
 import communication.network.Client;
 import communication.network.Server;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,34 +25,16 @@ import player.Player;
 public class AllCardsTest {
     DiscardPile discardPile;
     MainDeck drawPile;
-    ObjectInputStream inFromClient;
-    ObjectOutputStream outToClient;
-    Socket connectionSocket;
-    Server server;
-    Client client;
-    Message m;
+
     Player player;
     Player target;
 
     @BeforeEach
     public void initAllCardsTests() throws Exception {
-        server = new Server(2, 0);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> Assertions.assertDoesNotThrow(() -> {
-            server.addPlayersAndBots();
-        }));
-        executor.awaitTermination(2000, TimeUnit.MILLISECONDS);
-        client = new Client();
-        client.client("127.0.0.1");
         discardPile = new DiscardPile();
         drawPile = new MainDeck();
-        player = server.getPlayers().get(1);
-        target = server.getPlayers().get(0);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        server.closeSocket();
+        player = new Player(0, false, null, null, null);
+        target = new Player(1, false, null, null, null);
     }
 
     @Test
@@ -69,6 +44,18 @@ public class AllCardsTest {
         assertEquals("Attacked", target.getState());
         int turns = target.getNumberOfTurns();
         assertEquals(2, turns);
+
+    }
+
+    @Test
+    public void AttackCardIfJustAttacked() {
+        Card attackCard = CardsFactory.createCard("Attack");
+        player.setNumberOfTurns(10);
+        player.setState("Attacked");
+        assertEquals(target, attackCard.action(discardPile, drawPile, player, target));
+        assertEquals("Attacked", target.getState());
+        int turns = target.getNumberOfTurns();
+        assertEquals(12, turns);
 
     }
 
@@ -92,12 +79,46 @@ public class AllCardsTest {
         player.getHand().add(nope, 0);
         player.getHand().add(skip, 0);
         Card explodingKittenCard = CardsFactory.createCard("ExplodingKitten");
-        assertEquals(target, explodingKittenCard.action(discardPile, drawPile, player, target));
+        explodingKittenCard.action(discardPile, drawPile, player, target);
         assertEquals(true, discardPile.getCards().contains(explodingKittenCard));
         assertEquals(true, discardPile.getCards().contains(attack));
         assertEquals(true, discardPile.getCards().contains(nope));
         assertEquals(true, discardPile.getCards().contains(skip));
         assertEquals(true, player.getExploded()); // If exploded the player cant take more turns
+    }
+
+    @Test
+    public void ExplodingKittenCardWithDefuse() throws Exception {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Server server = new Server(2, 0);
+        executor.execute(() -> Assertions.assertDoesNotThrow(() -> {
+            server.addPlayersAndBots();
+        }));
+        executor.awaitTermination(2000, TimeUnit.MILLISECONDS);
+
+        Client client = new Client();
+        client.client("127.0.0.1");
+
+        Card defuse = CardsFactory.createCard("Defuse");
+        server.getPlayers().get(1).getHand().add(defuse, 0);
+        Card explodingKittenCard = CardsFactory.createCard("ExplodingKitten");
+        TimeUnit.SECONDS.sleep(2);
+        ExecutorService executorb = Executors.newSingleThreadExecutor();
+        executorb.execute(() -> Assertions.assertDoesNotThrow(() -> {
+            explodingKittenCard.action(discardPile, drawPile, server.getPlayers().get(1),
+                    target);
+        }));
+        executorb.awaitTermination(4000, TimeUnit.MILLISECONDS);
+
+        client.getOutToServer().writeObject("0");
+
+        assertEquals(false, server.getPlayers().get(1).getExploded());
+        TimeUnit.SECONDS.sleep(1);
+        assertEquals(explodingKittenCard, drawPile.getCards().get(0));
+        server.closeSocket();
+        executor.shutdown();
+        executorb.shutdown();
+
     }
 
     @Test
@@ -138,19 +159,11 @@ public class AllCardsTest {
     @Test
     public void SkipCard() throws ClassNotFoundException, IOException, InterruptedException {
         Card skipCard = CardsFactory.createCard("Skip");
-        assertEquals(server.getPlayers().get(
-                0),
-                skipCard.action(discardPile, drawPile,
-                        player, target));
-        TimeUnit.SECONDS.sleep(1);
-        assertEquals("You skiped a turn without drawing a new card\n",
-                client.getNextMessage().getMessage());
-
-    }
-
-    @Test
-    public void ExplodingKittenCard() {
-
+        int currentTurns = player.getNumberOfTurns();
+        skipCard.action(discardPile, drawPile,
+                player, target);
+        assertEquals(currentTurns - 1, player.getNumberOfTurns());
+        assertEquals(0, player.getHand().getCurrentSize());
     }
 
 }

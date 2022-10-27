@@ -141,6 +141,8 @@ public class RunGame {
 				e.printStackTrace();
 				System.exit(1);
 			}
+			gameLogic.dealDefuseCards();
+
 			gameLogic.getDrawPile().populateDeck(gameLogic.getServer().getPlayers().size(), expansions);
 
 			gameLogic.getDrawPile().shuffle();

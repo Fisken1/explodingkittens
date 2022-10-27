@@ -59,21 +59,21 @@ public class MainDeck implements Deck {
 <span class="fc" id="L59">				add(CardsFactory.createCard(&quot;OverweightBikiniCat&quot;), 0);</span>
 			}
 		}
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">		if (expansions.contains(&quot;Streaking kittens&quot;)) {</span>
+<span class="fc" id="L62">		if (expansions.contains(&quot;Streaking kittens&quot;)) {</span>
 			// Other expansion cards not implemented....
 		}
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		if (expansions.contains(&quot;Imploding kittens&quot;)) {</span>
+<span class="fc" id="L65">		if (expansions.contains(&quot;Imploding kittens&quot;)) {</span>
 			// Other expansion cards not implemented....
 		}
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">		if (expansions.contains(&quot;Barking kittens&quot;)) {</span>
+<span class="fc" id="L68">		if (expansions.contains(&quot;Barking kittens&quot;)) {</span>
 			// Other expansion cards not implemented....
 		}
 <span class="fc" id="L71">	}</span>
 
 	public Card removeAndDistributeCards() {
-<span class="fc" id="L74">		Card toRemove = this.Cards.get(0);</span>
-<span class="fc" id="L75">		this.Cards.remove(0);</span>
-<span class="fc" id="L76">		return toRemove;</span>
+<span class="nc" id="L74">		Card toRemove = this.Cards.get(0);</span>
+<span class="nc" id="L75">		this.Cards.remove(0);</span>
+<span class="nc" id="L76">		return toRemove;</span>
 	}
 
 	public void populateDeckWithExplodingKittens(int playerSize) {
@@ -89,14 +89,14 @@ public class MainDeck implements Deck {
 <span class="pc bpc" id="L89" title="1 of 2 branches missed.">		if (this.Cards.size() != 1) {</span>
 <span class="pc bpc" id="L90" title="1 of 2 branches missed.">			if (this.Cards.size() &gt;= 3) {</span>
 <span class="nc" id="L91">				size = 3;</span>
-			} else {
+<span class="nc" id="L92">			} else {</span>
 <span class="fc" id="L93">				size = this.Cards.size() - 1;</span>
 			}
 
 <span class="pc bpc" id="L96" title="1 of 2 branches missed.">			for (int i = 0; i &lt; size; i++) {</span>
 <span class="nc" id="L97">				topThreeCards.add(new Choice(this.Cards.get(i).getName() + &quot; &quot;, &quot;&quot;));</span>
 			}
-		} else {
+<span class="fc" id="L99">		} else {</span>
 <span class="nc" id="L100">			topThreeCards.add(new Choice(this.Cards.get(0).getName(), &quot;&quot;));</span>
 		}
 <span class="fc" id="L102">		return topThreeCards;</span>
@@ -112,11 +112,11 @@ public class MainDeck implements Deck {
 <span class="nc bnc" id="L112" title="All 2 branches missed.">		for (Card c : this.getCards()) {</span>
 <span class="nc bnc" id="L113" title="All 2 branches missed.">			if (!c.getName().equals(&quot;ExplodingKitten&quot;))</span>
 <span class="nc" id="L114">				tempNames.add(c.getName());</span>
-<span class="nc" id="L115">		}</span>
+		}
 <span class="nc" id="L116">		HashSet&lt;String&gt; hset = new HashSet&lt;String&gt;(tempNames);</span>
 <span class="nc bnc" id="L117" title="All 2 branches missed.">		for (String name : hset) {</span>
 <span class="nc" id="L118">			allCardNames.add(new Choice(name, &quot;&quot;));</span>
-<span class="nc" id="L119">		}</span>
+		}
 <span class="nc" id="L120">		return allCardNames;</span>
 	}
 
@@ -136,4 +136,4 @@ public class MainDeck implements Deck {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

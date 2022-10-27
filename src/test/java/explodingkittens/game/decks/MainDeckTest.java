@@ -4,12 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import game.cards.Card;
-
 
 public class MainDeckTest {
     private MainDeck drawPile;
@@ -183,13 +181,14 @@ public class MainDeckTest {
 
     @Test
     public void checkNrExplodingKitten() {
-        drawPile.populateDeckWithExplodingKittens(2);
+        int nrOfPlayers = 2;
+        drawPile.populateDeckWithExplodingKittens(nrOfPlayers);
         int explodingKitten = 0;
         for (Card c : drawPile.getCards()) {
             if (c.getName().equals("ExplodingKitten"))
                 explodingKitten += 1;
         }
-        assertEquals(1, explodingKitten);
+        assertEquals(nrOfPlayers - 1, explodingKitten);
 
     }
 }

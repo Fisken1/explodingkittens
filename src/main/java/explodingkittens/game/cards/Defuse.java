@@ -38,7 +38,7 @@ public class Defuse implements Card {
 		Message question = MessageFactory.createMessage(
 				"Where in the deck do you wish to place the ExplodingKitten? \n",
 				new ArrayList<Choice>(Arrays.asList(new Choice("0", "top of the deck"),
-						new Choice(String.valueOf(drawPile.getCurrentSize()), "bottom of the deck"))),
+						new Choice(String.valueOf(drawPile.getCurrentSize() + 1), "bottom of the deck"))),
 				1);
 
 		boolean validOption = false;

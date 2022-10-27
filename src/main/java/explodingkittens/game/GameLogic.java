@@ -46,7 +46,7 @@ public class GameLogic {
      */
     public void startGame(int startingPlayer) throws Exception {
 
-        currentPlayer = allPlayers.get(startingPlayer); // CHNAGE THIS BACK TO "STARTPLAYER"
+        setCurrentPlayer(allPlayers.get(startingPlayer)); // CHNAGE THIS BACK TO "STARTPLAYER"
         int playersLeft = allPlayers.size();
         allCardNames = drawPile.allCardNames();
         Message welcomeMessage = MessageFactory
@@ -86,8 +86,7 @@ public class GameLogic {
                                     && (options.choicesContainedAnswer(args[0] + " " + args[1])))) {
 
                         if (args[0].equals("Pass")) {
-                            nextPlayer = drawCard(currentPlayer);
-                            currentPlayer.setNumberOfTurns(currentPlayer.getNumberOfTurns() - 1);
+                            nextPlayer = playPass();
                             response = "";
                         } else if (isCombo(args, currentPlayer)) {
                             nextPlayer = handleCombo(currentPlayer, args);
@@ -109,12 +108,15 @@ public class GameLogic {
                     playersLeft--;
                     presentExploded(currentPlayer);
                 }
-                currentPlayer = nextPlayer;
+                setCurrentPlayer(nextPlayer);
 
                 if (currentPlayer.getNumberOfTurns() == 0) {
                     currentPlayer.setNumberOfTurns(1);
                 }
-                checkWinner(currentPlayer, playersLeft);
+                if (checkWinner(currentPlayer, playersLeft)) {
+                    server.closeSocket();
+                    System.exit(0);
+                }
             } else {
                 // Bots not yet implemented
             }
@@ -122,9 +124,14 @@ public class GameLogic {
 
     }
 
-    private void checkWinner(Player currentPlayer, int playersLeft) {
+    private Player playPass() {
+        currentPlayer.setNumberOfTurns(currentPlayer.getNumberOfTurns() - 1);
+        return drawCard(currentPlayer);
+    }
+
+    public boolean checkWinner(Player currentPlayer, int playersLeft) {
         if (playersLeft == 1) {
-            currentPlayer = nextPlayer;
+            setCurrentPlayer(nextPlayer);
             Player winner = currentPlayer;
             for (Player notify : allPlayers)
                 winner = (!notify.getExploded() ? notify : winner);
@@ -133,9 +140,10 @@ public class GameLogic {
                         ((notify.getId() == winner.getId()) ? "\nCongrats you" : "Player " + winner.getId())
                                 + " have won the game\n\nClosing the game...",
                         null, 0));
-            server.closeSocket();
-            System.exit(0);
+
+            return true;
         }
+        return false;
     }
 
     private void presentNotValid(Player currentPlayer) {
@@ -560,10 +568,15 @@ public class GameLogic {
 
     public void dealCards() {
         for (Player player : allPlayers) {
-            player.getHand().add(CardsFactory.createCard("Defuse"), 0);
             for (int i = 0; i < 7; i++) {
                 player.getHand().add(drawPile.removeAndDistributeCards(), 0);
             }
+        }
+    }
+
+    public void dealDefuseCards() {
+        for (Player player : allPlayers) {
+            player.getHand().add(CardsFactory.createCard("Defuse"), 0);
         }
     }
 
@@ -579,4 +592,7 @@ public class GameLogic {
         return currentPlayer;
     }
 
+    public void setCurrentPlayer(Player currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
 }

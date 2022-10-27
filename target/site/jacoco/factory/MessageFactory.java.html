@@ -22,11 +22,11 @@ import communication.messages.*;
 <span class="nc" id="L22">                return new Information(&quot;The draw pile is empty\n&quot;);</span>
             case &quot;Nope&quot;:
 <span class="nc" id="L24">                return new RhetoricalQuestion(</span>
-                        &quot;Do you want to play a Nope Card (if one was just played you alternate between Nope and Yup)\n&quot;,
-                        choices); // CHANGE
+<span class="nc" id="L25">                        &quot;Do you want to play a Nope Card (if one was just played you alternate between Nope and Yup)\n&quot;,</span>
+<span class="nc" id="L26">                        choices); // CHANGE</span>
             case &quot;ClearScreen&quot;:
 <span class="nc" id="L28">                return new Information(</span>
-                        &quot;\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n&quot;);
+<span class="nc" id="L29">                        &quot;\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n&quot;);</span>
             // Card promts
             case &quot;SeeTheFuture&quot;:
 <span class="fc" id="L32">                return new RhetoricalQuestion(&quot;The top 3 cards from the draw pile are \n&quot;, choices);</span>
@@ -50,4 +50,4 @@ import communication.messages.*;
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -16,12 +16,12 @@ public class Skip implements Card {
 <span class="fc" id="L16">		this.ableToTarget = false;</span>
 <span class="fc" id="L17">	}</span>
 
-
+	@Override
 	public boolean isAbleToTarget() {
 <span class="nc" id="L21">		return ableToTarget;</span>
 	}
 
-
+	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 <span class="fc" id="L26">		player.sendMessage(MessageFactory.createMessage(&quot;Skip&quot;, null, 0));</span>
 <span class="fc" id="L27">		player.setNumberOfTurns(player.getNumberOfTurns() - 1);</span>
@@ -32,15 +32,15 @@ public class Skip implements Card {
 		}
 	}
 
-
+	@Override
 	public String getName() {
 <span class="fc" id="L37">		return this.name;</span>
 	}
 
-
+	@Override
 	public String getDescription() {
 <span class="nc" id="L42">		return this.description;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

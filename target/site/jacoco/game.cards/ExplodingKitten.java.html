@@ -16,12 +16,12 @@ public class ExplodingKitten implements Card {
 <span class="fc" id="L16">		this.ableToTarget = false;</span>
 <span class="fc" id="L17">	}</span>
 
-
+	@Override
 	public boolean isAbleToTarget() {
 <span class="nc" id="L21">		return ableToTarget;</span>
 	}
 
-
+	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 <span class="fc" id="L26">		discardPile.add(this, 0);</span>
 <span class="fc" id="L27">		drawPile.getCards().remove(this);</span>
@@ -29,23 +29,26 @@ public class ExplodingKitten implements Card {
 <span class="fc" id="L29">			player.sendMessage(</span>
 <span class="fc" id="L30">					MessageFactory.createMessage(&quot;Oh no you drew a Exploding kitten, you exploded!&quot;, null, 0));</span>
 <span class="fc" id="L31">			player.setExploded(true);</span>
-<span class="fc" id="L32">			player.getHand().getCards().clear();</span>
-<span class="fc" id="L33">			return target;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">			for (int i = 0; i &lt; player.getHand().getCards().size(); i++) {</span>
+<span class="fc" id="L33">				discardPile.add(player.getHand().getCards().get(i), 0);</span>
+			}
+<span class="fc" id="L35">			player.getHand().getCards().clear();</span>
+<span class="fc" id="L36">			return target;</span>
 		}
-<span class="nc" id="L35">		player.getHand().add(this, 0);</span>
-<span class="nc" id="L36">		Card defuse = player.getHand().returnSpecificCardByName(&quot;Defuse&quot;);</span>
-<span class="nc" id="L37">		return defuse.action(discardPile, drawPile, player, target);</span>
+<span class="nc" id="L38">		player.getHand().add(this, 0);</span>
+<span class="nc" id="L39">		Card defuse = player.getHand().returnSpecificCardByName(&quot;Defuse&quot;);</span>
+<span class="nc" id="L40">		return defuse.action(discardPile, drawPile, player, target);</span>
 	}
 
-
+	@Override
 	public String getName() {
-<span class="fc" id="L42">		return this.name;</span>
+<span class="fc" id="L45">		return this.name;</span>
 	}
 
-
+	@Override
 	public String getDescription() {
-<span class="nc" id="L47">		return this.description;</span>
+<span class="nc" id="L50">		return this.description;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

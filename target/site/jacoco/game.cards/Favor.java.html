@@ -16,12 +16,12 @@ public class Favor implements Card {
 <span class="fc" id="L16">		this.ableToTarget = true;</span>
 <span class="fc" id="L17">	}</span>
 
-
+	@Override
 	public boolean isAbleToTarget() {
 <span class="nc" id="L21">		return ableToTarget;</span>
 	}
 
-
+	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 <span class="nc" id="L26">		boolean viableOption = false;</span>
 <span class="nc bnc" id="L27" title="All 2 branches missed.">		if (target.getHand().getCurrentSize() == 0)</span>
@@ -29,7 +29,7 @@ public class Favor implements Card {
 <span class="nc bnc" id="L29" title="All 2 branches missed.">		while (!viableOption) {</span>
 <span class="nc" id="L30">			target.sendMessage(MessageFactory.createMessage(</span>
 <span class="nc" id="L31">					&quot;Player &quot; + player.getId() +</span>
-							&quot; has played a favor card on you, what card do you want to give?\n&quot;,
+<span class="nc" id="L32">							&quot; has played a favor card on you, what card do you want to give?\n&quot;,</span>
 <span class="nc" id="L33">					target.getHand().getCardNamesAsChoices(), 1));</span>
 <span class="nc" id="L34">			String name = target.readMessage(false);</span>
 <span class="nc bnc" id="L35" title="All 2 branches missed.">			if (target.getHand().containsCardWithName(name)) {</span>
@@ -39,24 +39,24 @@ public class Favor implements Card {
 <span class="nc" id="L39">				player.sendMessage(</span>
 <span class="nc" id="L40">						MessageFactory.createMessage(</span>
 <span class="nc" id="L41">								&quot;You got a &quot; + name + &quot; card from player &quot; + target.getId(), null, 0));</span>
-			} else {
+<span class="nc" id="L42">			} else {</span>
 <span class="nc" id="L43">				target.sendMessage(</span>
 <span class="nc" id="L44">						MessageFactory.createMessage(</span>
-								&quot;NotValid&quot;, null, 0));
+<span class="nc" id="L45">								&quot;NotValid&quot;, null, 0));</span>
 			}
-<span class="nc" id="L47">		}</span>
+		}
 <span class="nc" id="L48">		return player;</span>
 	}
 
-
+	@Override
 	public String getName() {
 <span class="fc" id="L53">		return this.name;</span>
 	}
 
-
+	@Override
 	public String getDescription() {
 <span class="nc" id="L58">		return this.description;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

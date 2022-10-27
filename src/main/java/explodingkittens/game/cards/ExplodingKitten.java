@@ -29,6 +29,9 @@ public class ExplodingKitten implements Card {
 			player.sendMessage(
 					MessageFactory.createMessage("Oh no you drew a Exploding kitten, you exploded!", null, 0));
 			player.setExploded(true);
+			for (int i = 0; i < player.getHand().getCards().size(); i++) {
+				discardPile.add(player.getHand().getCards().get(i), 0);
+			}
 			player.getHand().getCards().clear();
 			return target;
 		}

@@ -17,7 +17,7 @@ public class ClosedQuestion implements Message {
 <span class="nc" id="L17">        String choices = &quot;&quot;;</span>
 <span class="nc bnc" id="L18" title="All 2 branches missed.">        for (Choice c : this.choices) {</span>
 <span class="nc" id="L19">            choices = choices + (c.getChoice() + &quot; &quot; + c.getChoiceDescription() + &quot;\n&quot;);</span>
-<span class="nc" id="L20">        }</span>
+        }
 <span class="nc" id="L21">        return choices;</span>
     }
 
@@ -37,7 +37,7 @@ public class ClosedQuestion implements Message {
 <span class="nc bnc" id="L37" title="All 2 branches missed.">            if (c.getChoice().equals(answer)) {</span>
 <span class="nc" id="L38">                return true;</span>
             }
-<span class="nc" id="L40">        }</span>
+        }
 <span class="nc" id="L41">        return false;</span>
     }
 
@@ -73,4 +73,4 @@ public class ClosedQuestion implements Message {
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

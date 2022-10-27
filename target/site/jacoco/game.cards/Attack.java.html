@@ -16,34 +16,34 @@ public class Attack implements Card {
 <span class="fc" id="L16">		this.ableToTarget = false;</span>
 <span class="fc" id="L17">	}</span>
 
-
+	@Override
 	public boolean isAbleToTarget() {
 <span class="nc" id="L21">		return ableToTarget;</span>
 	}
 
-
+	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 <span class="fc" id="L26">		target.setState(&quot;Attacked&quot;);</span>
 <span class="fc" id="L27">		target.sendMessage(MessageFactory.createMessage(&quot;Attack&quot;, null, 0));</span>
 <span class="pc bpc" id="L28" title="1 of 2 branches missed.">		if (player.getState().equals(&quot;Attacked&quot;)) {</span>
 <span class="nc" id="L29">			target.setNumberOfTurns(2 + player.getNumberOfTurns());</span>
 <span class="nc" id="L30">			player.setState(&quot;Normal&quot;);</span>
-		} else {
+<span class="nc" id="L31">		} else {</span>
 <span class="fc" id="L32">			target.setNumberOfTurns(2);</span>
 		}
 <span class="fc" id="L34">		player.setNumberOfTurns(0);</span>
 <span class="fc" id="L35">		return target;</span>
 	}
 
-
+	@Override
 	public String getName() {
 <span class="fc" id="L40">		return this.name;</span>
 	}
 
-
+	@Override
 	public String getDescription() {
 <span class="nc" id="L45">		return this.description;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

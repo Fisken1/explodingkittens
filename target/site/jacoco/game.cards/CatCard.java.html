@@ -15,27 +15,27 @@ public class CatCard implements Card {
 <span class="fc" id="L15">        this.ableToTarget = true;</span>
 <span class="fc" id="L16">    }</span>
 
-
+    @Override
     public boolean isAbleToTarget() {
 <span class="nc" id="L20">        return ableToTarget;</span>
     }
 
-
+    @Override
     public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 <span class="fc" id="L25">        discardPile.add(this, 0);</span>
 <span class="fc" id="L26">        player.getHand().remove(this);</span>
 <span class="fc" id="L27">        return target;</span>
     }
 
-
+    @Override
     public String getName() {
 <span class="fc" id="L32">        return this.name;</span>
     }
 
-
+    @Override
     public String getDescription() {
 <span class="nc" id="L37">        return this.description;</span>
     }
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
