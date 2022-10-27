@@ -1,0 +1,80 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+         {
+            "type": "java",
+            "name": "6 player server",
+            "request": "launch",
+            "mainClass": "game.RunGame",
+            "projectName": "explodingkittens",
+            "args": [
+                "6",
+                "0"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "5 player server",
+            "request": "launch",
+            "mainClass": "game.RunGame",
+            "projectName": "explodingkittens",
+            "args": [
+                "5",
+                "0"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "4 player server",
+            "request": "launch",
+            "mainClass": "game.RunGame",
+            "projectName": "explodingkittens",
+            "args": [
+                "4",
+                "0"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "3 player server",
+            "request": "launch",
+            "mainClass": "game.RunGame",
+            "projectName": "explodingkittens",
+            "args": [
+                "3",
+                "0"
+            ]
+        },
+         {
+            "type": "java",
+            "name": "2 player server",
+            "request": "launch",
+            "mainClass": "game.RunGame",
+            "projectName": "explodingkittens",
+            "args": [
+                "2",
+                "0"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "client",
+            "request": "launch",
+            "mainClass": "game.RunGame",
+            "projectName": "explodingkittens",
+            "args": [
+                "127.0.0.1"
+            ]
+        }
+    ]
+}

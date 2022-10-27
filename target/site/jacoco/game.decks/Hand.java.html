@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Hand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">explodingkittens</a> &gt; <a href="index.source.html" class="el_package">game.decks</a> &gt; <span class="el_source">Hand.java</span></div><h1>Hand.java</h1><pre class="source lang-java linenums">package game.decks;
+
+import java.util.*;
+
+import communication.messages.Choice;
+import game.cards.Card;
+
+public class Hand implements Deck {
+
+	private ArrayList&lt;Card&gt; Cards;
+
+<span class="fc" id="L12">	public Hand() {</span>
+<span class="fc" id="L13">		this.Cards = new ArrayList&lt;Card&gt;();</span>
+<span class="fc" id="L14">	}</span>
+
+	public boolean containsCardWithName(String name) {
+<span class="pc bpc" id="L17" title="1 of 2 branches missed.">		for (Card card : this.Cards) {</span>
+<span class="nc bnc" id="L18" title="All 2 branches missed.">			if (card.getName().equals(name))</span>
+<span class="nc" id="L19">				return true;</span>
+<span class="nc" id="L20">		}</span>
+<span class="fc" id="L21">		return false;</span>
+	}
+
+	public ArrayList&lt;Choice&gt; getCardNamesAsChoices() {
+<span class="nc" id="L25">		ArrayList&lt;Choice&gt; cardsInHand = new ArrayList&lt;Choice&gt;();</span>
+<span class="nc bnc" id="L26" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
+<span class="nc" id="L27">			cardsInHand.add(new Choice(card.getName(), &quot;&quot;));</span>
+<span class="nc" id="L28">		}</span>
+<span class="nc" id="L29">		return cardsInHand;</span>
+	}
+
+	public List&lt;String&gt; getCardNames() {
+<span class="nc" id="L33">		List&lt;String&gt; cardsInHand = new ArrayList&lt;String&gt;();</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
+<span class="nc" id="L35">			cardsInHand.add(card.getName());</span>
+<span class="nc" id="L36">		}</span>
+<span class="nc" id="L37">		return cardsInHand;</span>
+	}
+
+	public void remove(Card card) {
+<span class="fc" id="L41">		this.Cards.remove(card);</span>
+<span class="fc" id="L42">	}</span>
+
+	public Card returnSpecificCardByName(String name) {
+<span class="nc bnc" id="L45" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">			if (card.getName().equals(name))</span>
+<span class="nc" id="L47">				return card;</span>
+<span class="nc" id="L48">		}</span>
+<span class="nc" id="L49">		return null;</span>
+	}
+
+	public boolean containsTargetingCard() {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">		for (Card card : this.Cards) {</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">			if (card.isAbleToTarget())</span>
+<span class="nc" id="L55">				return true;</span>
+<span class="nc" id="L56">		}</span>
+<span class="nc" id="L57">		return false;</span>
+	}
+
+	public int occurenceOf(String name) {
+<span class="nc" id="L61">		return Collections.frequency(getCardNames(), name);</span>
+	}
+
+
+	public void add(Card card, int position) {
+<span class="fc" id="L66">		this.Cards.add(card);</span>
+<span class="fc" id="L67">	}</span>
+
+	public void shuffle() {
+<span class="nc" id="L70">		Collections.shuffle(this.Cards);</span>
+<span class="nc" id="L71">	}</span>
+
+
+	public int getCurrentSize() {
+<span class="fc" id="L75">		return Cards.size();</span>
+	}
+
+
+	public ArrayList&lt;Card&gt; getCards() {
+<span class="fc" id="L80">		return this.Cards;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CardsFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">explodingkittens</a> &gt; <a href="index.source.html" class="el_package">factory</a> &gt; <span class="el_source">CardsFactory.java</span></div><h1>CardsFactory.java</h1><pre class="source lang-java linenums">package factory;
+
+import game.cards.*;
+
+<span class="nc" id="L5">public class CardsFactory {</span>
+
+    public static Card createCard(String card) {
+<span class="fc bfc" id="L8" title="All 9 branches covered.">        switch (card) {</span>
+            case &quot;Attack&quot;:
+<span class="fc" id="L10">                return new Attack();</span>
+            case &quot;Defuse&quot;:
+<span class="fc" id="L12">                return new Defuse();</span>
+            case &quot;ExplodingKitten&quot;:
+<span class="fc" id="L14">                return new ExplodingKitten();</span>
+            case &quot;Favor&quot;:
+<span class="fc" id="L16">                return new Favor();</span>
+            case &quot;Nope&quot;:
+<span class="fc" id="L18">                return new Nope();</span>
+            case &quot;SeeTheFuture&quot;:
+<span class="fc" id="L20">                return new SeeTheFuture();</span>
+            case &quot;Shuffle&quot;:
+<span class="fc" id="L22">                return new Shuffle();</span>
+            case &quot;Skip&quot;:
+<span class="fc" id="L24">                return new Skip();</span>
+        }
+<span class="fc" id="L26">        return new CatCard(card);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

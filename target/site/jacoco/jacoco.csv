@@ -1,0 +1,26 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+explodingkittens,factory,CardsFactory,3,45,0,9,1,10,1,9,1,1
+explodingkittens,factory,MessageFactory,41,54,9,11,8,10,10,7,1,1
+explodingkittens,game.cards,Attack,18,39,1,1,4,12,3,3,2,3
+explodingkittens,game.cards,ExplodingKitten,23,44,1,1,5,14,3,3,2,3
+explodingkittens,game.cards,CatCard,6,25,0,0,2,9,2,3,2,3
+explodingkittens,game.cards,Nope,6,25,0,0,2,9,2,3,2,3
+explodingkittens,game.cards,Shuffle,6,25,0,0,2,9,2,3,2,3
+explodingkittens,game.cards,SeeTheFuture,6,24,0,0,2,9,2,3,2,3
+explodingkittens,game.cards,Favor,71,15,6,0,21,6,6,2,3,2
+explodingkittens,game.cards,Skip,8,35,1,1,3,10,3,3,2,3
+explodingkittens,game.cards,Defuse,121,15,6,0,28,6,6,2,3,2
+explodingkittens,game,GameLogic,1141,77,147,4,265,17,94,7,17,5
+explodingkittens,game,RunGame,269,0,36,0,90,0,27,0,6,0
+explodingkittens,utility,interactableCardThread,26,0,2,0,10,0,3,0,2,0
+explodingkittens,game.decks,MainDeck,88,249,13,35,14,52,11,23,1,9
+explodingkittens,game.decks,Hand,111,36,15,1,26,11,14,6,6,6
+explodingkittens,game.decks,DiscardPile,23,17,4,0,5,6,4,3,2,3
+explodingkittens,communication.network,Server,131,17,10,0,30,6,8,2,3,2
+explodingkittens,communication.network,Client,39,0,0,0,9,0,2,0,2,0
+explodingkittens,communication.network,Client.new Runnable() {...},107,0,12,0,30,0,8,0,2,0
+explodingkittens,communication.messages,ClosedQuestion,102,42,21,7,26,13,19,2,5,2
+explodingkittens,communication.messages,Information,36,35,9,5,12,12,10,4,3,4
+explodingkittens,communication.messages,Choice,6,9,0,0,2,4,2,1,2,1
+explodingkittens,communication.messages,RhetoricalQuestion,88,56,20,8,22,17,17,4,3,4
+explodingkittens,player,Player,216,90,34,4,58,30,24,9,5,9

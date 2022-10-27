@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainDeck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">explodingkittens</a> &gt; <a href="index.source.html" class="el_package">game.decks</a> &gt; <span class="el_source">MainDeck.java</span></div><h1>MainDeck.java</h1><pre class="source lang-java linenums">package game.decks;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+
+import communication.messages.Choice;
+import factory.CardsFactory;
+import game.cards.Card;
+
+public class MainDeck implements Deck {
+
+	private ArrayList&lt;Card&gt; Cards;
+
+<span class="fc" id="L15">	public MainDeck() {</span>
+<span class="fc" id="L16">		this.Cards = new ArrayList&lt;Card&gt;();</span>
+<span class="fc" id="L17">	}</span>
+
+	public void populateDeck(int playerSize, ArrayList&lt;String&gt; expansions) {
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">		if (expansions.contains(&quot;Exploding kittens&quot;)) {</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">			if (playerSize &gt; 4)</span>
+<span class="fc" id="L22">				add(CardsFactory.createCard(&quot;Defuse&quot;), 0);</span>
+			else {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">				for (int i = 0; i &lt; 2; i++) {</span>
+<span class="fc" id="L25">					add(CardsFactory.createCard(&quot;Defuse&quot;), 0);</span>
+				}
+			}
+<span class="fc bfc" id="L28" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L29">				add(CardsFactory.createCard(&quot;Attack&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L31" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L32">				add(CardsFactory.createCard(&quot;Favor&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L34" title="All 2 branches covered.">			for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc" id="L35">				add(CardsFactory.createCard(&quot;Nope&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L37" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L38">				add(CardsFactory.createCard(&quot;Shuffle&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L40" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L41">				add(CardsFactory.createCard(&quot;Skip&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L43" title="All 2 branches covered.">			for (int i = 0; i &lt; 5; i++) {</span>
+<span class="fc" id="L44">				add(CardsFactory.createCard(&quot;SeeTheFuture&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L46" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L47">				add(CardsFactory.createCard(&quot;HairyPotatoCat&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L49" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L50">				add(CardsFactory.createCard(&quot;Cattermelon&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L52" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L53">				add(CardsFactory.createCard(&quot;RainbowRalphingCat&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L55" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L56">				add(CardsFactory.createCard(&quot;TacoCat&quot;), 0);</span>
+			}
+<span class="fc bfc" id="L58" title="All 2 branches covered.">			for (int i = 0; i &lt; 4; i++) {</span>
+<span class="fc" id="L59">				add(CardsFactory.createCard(&quot;OverweightBikiniCat&quot;), 0);</span>
+			}
+		}
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">		if (expansions.contains(&quot;Streaking kittens&quot;)) {</span>
+			// Other expansion cards not implemented....
+		}
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">		if (expansions.contains(&quot;Imploding kittens&quot;)) {</span>
+			// Other expansion cards not implemented....
+		}
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">		if (expansions.contains(&quot;Barking kittens&quot;)) {</span>
+			// Other expansion cards not implemented....
+		}
+<span class="fc" id="L71">	}</span>
+
+	public Card removeAndDistributeCards() {
+<span class="fc" id="L74">		Card toRemove = this.Cards.get(0);</span>
+<span class="fc" id="L75">		this.Cards.remove(0);</span>
+<span class="fc" id="L76">		return toRemove;</span>
+	}
+
+	public void populateDeckWithExplodingKittens(int playerSize) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		for (int i = 1; i &lt; playerSize; i++) {</span>
+<span class="fc" id="L81">			add(CardsFactory.createCard(&quot;ExplodingKitten&quot;), 0);</span>
+		}
+
+<span class="fc" id="L84">	}</span>
+
+	public ArrayList&lt;Choice&gt; topThreeCards() {
+<span class="fc" id="L87">		ArrayList&lt;Choice&gt; topThreeCards = new ArrayList&lt;Choice&gt;();</span>
+		int size;
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">		if (this.Cards.size() != 1) {</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">			if (this.Cards.size() &gt;= 3) {</span>
+<span class="nc" id="L91">				size = 3;</span>
+			} else {
+<span class="fc" id="L93">				size = this.Cards.size() - 1;</span>
+			}
+
+<span class="pc bpc" id="L96" title="1 of 2 branches missed.">			for (int i = 0; i &lt; size; i++) {</span>
+<span class="nc" id="L97">				topThreeCards.add(new Choice(this.Cards.get(i).getName() + &quot; &quot;, &quot;&quot;));</span>
+			}
+		} else {
+<span class="nc" id="L100">			topThreeCards.add(new Choice(this.Cards.get(0).getName(), &quot;&quot;));</span>
+		}
+<span class="fc" id="L102">		return topThreeCards;</span>
+	}
+
+	public void shuffle() {
+<span class="fc" id="L106">		Collections.shuffle(this.Cards);</span>
+<span class="fc" id="L107">	}</span>
+
+	public ArrayList&lt;Choice&gt; allCardNames() {
+<span class="nc" id="L110">		ArrayList&lt;String&gt; tempNames = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L111">		ArrayList&lt;Choice&gt; allCardNames = new ArrayList&lt;Choice&gt;();</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">		for (Card c : this.getCards()) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">			if (!c.getName().equals(&quot;ExplodingKitten&quot;))</span>
+<span class="nc" id="L114">				tempNames.add(c.getName());</span>
+<span class="nc" id="L115">		}</span>
+<span class="nc" id="L116">		HashSet&lt;String&gt; hset = new HashSet&lt;String&gt;(tempNames);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">		for (String name : hset) {</span>
+<span class="nc" id="L118">			allCardNames.add(new Choice(name, &quot;&quot;));</span>
+<span class="nc" id="L119">		}</span>
+<span class="nc" id="L120">		return allCardNames;</span>
+	}
+
+
+	public void add(Card card, int position) {
+<span class="fc" id="L125">		this.Cards.add(position, card);</span>
+<span class="fc" id="L126">	}</span>
+
+
+	public int getCurrentSize() {
+<span class="fc" id="L130">		return Cards.size();</span>
+	}
+
+
+	public ArrayList&lt;Card&gt; getCards() {
+<span class="fc" id="L135">		return this.Cards;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

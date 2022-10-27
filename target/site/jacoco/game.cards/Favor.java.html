@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Favor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">explodingkittens</a> &gt; <a href="index.source.html" class="el_package">game.cards</a> &gt; <span class="el_source">Favor.java</span></div><h1>Favor.java</h1><pre class="source lang-java linenums">package game.cards;
+
+import factory.MessageFactory;
+import game.decks.*;
+import player.Player;
+
+public class Favor implements Card {
+
+	private String name;
+	private String description;
+	private boolean ableToTarget;
+
+<span class="fc" id="L13">	public Favor() {</span>
+<span class="fc" id="L14">		this.name = &quot;Favor&quot;;</span>
+<span class="fc" id="L15">		this.description = &quot;(Force any other player to give you 1 card from their hand. They choose which card to give you)&quot;;</span>
+<span class="fc" id="L16">		this.ableToTarget = true;</span>
+<span class="fc" id="L17">	}</span>
+
+
+	public boolean isAbleToTarget() {
+<span class="nc" id="L21">		return ableToTarget;</span>
+	}
+
+
+	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
+<span class="nc" id="L26">		boolean viableOption = false;</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">		if (target.getHand().getCurrentSize() == 0)</span>
+<span class="nc" id="L28">			viableOption = true; // special case - target has no cards to give</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		while (!viableOption) {</span>
+<span class="nc" id="L30">			target.sendMessage(MessageFactory.createMessage(</span>
+<span class="nc" id="L31">					&quot;Player &quot; + player.getId() +</span>
+							&quot; has played a favor card on you, what card do you want to give?\n&quot;,
+<span class="nc" id="L33">					target.getHand().getCardNamesAsChoices(), 1));</span>
+<span class="nc" id="L34">			String name = target.readMessage(false);</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">			if (target.getHand().containsCardWithName(name)) {</span>
+<span class="nc" id="L36">				viableOption = true;</span>
+<span class="nc" id="L37">				player.getHand().add(target.getHand().returnSpecificCardByName(name), 0);</span>
+<span class="nc" id="L38">				target.getHand().remove(target.getHand().returnSpecificCardByName(name));</span>
+<span class="nc" id="L39">				player.sendMessage(</span>
+<span class="nc" id="L40">						MessageFactory.createMessage(</span>
+<span class="nc" id="L41">								&quot;You got a &quot; + name + &quot; card from player &quot; + target.getId(), null, 0));</span>
+			} else {
+<span class="nc" id="L43">				target.sendMessage(</span>
+<span class="nc" id="L44">						MessageFactory.createMessage(</span>
+								&quot;NotValid&quot;, null, 0));
+			}
+<span class="nc" id="L47">		}</span>
+<span class="nc" id="L48">		return player;</span>
+	}
+
+
+	public String getName() {
+<span class="fc" id="L53">		return this.name;</span>
+	}
+
+
+	public String getDescription() {
+<span class="nc" id="L58">		return this.description;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

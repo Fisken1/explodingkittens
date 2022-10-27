@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExplodingKitten.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">explodingkittens</a> &gt; <a href="index.source.html" class="el_package">game.cards</a> &gt; <span class="el_source">ExplodingKitten.java</span></div><h1>ExplodingKitten.java</h1><pre class="source lang-java linenums">package game.cards;
+
+import factory.MessageFactory;
+import game.decks.*;
+import player.Player;
+
+public class ExplodingKitten implements Card {
+
+	private String name;
+	private String description;
+	private boolean ableToTarget;
+
+<span class="fc" id="L13">	public ExplodingKitten() {</span>
+<span class="fc" id="L14">		this.name = &quot;ExplodingKitten&quot;;</span>
+<span class="fc" id="L15">		this.description = &quot;(Unless you have a Defuse Card, you are dead)&quot;;</span>
+<span class="fc" id="L16">		this.ableToTarget = false;</span>
+<span class="fc" id="L17">	}</span>
+
+
+	public boolean isAbleToTarget() {
+<span class="nc" id="L21">		return ableToTarget;</span>
+	}
+
+
+	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
+<span class="fc" id="L26">		discardPile.add(this, 0);</span>
+<span class="fc" id="L27">		drawPile.getCards().remove(this);</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">		if (!player.getHand().containsCardWithName(&quot;Defuse&quot;)) {</span>
+<span class="fc" id="L29">			player.sendMessage(</span>
+<span class="fc" id="L30">					MessageFactory.createMessage(&quot;Oh no you drew a Exploding kitten, you exploded!&quot;, null, 0));</span>
+<span class="fc" id="L31">			player.setExploded(true);</span>
+<span class="fc" id="L32">			player.getHand().getCards().clear();</span>
+<span class="fc" id="L33">			return target;</span>
+		}
+<span class="nc" id="L35">		player.getHand().add(this, 0);</span>
+<span class="nc" id="L36">		Card defuse = player.getHand().returnSpecificCardByName(&quot;Defuse&quot;);</span>
+<span class="nc" id="L37">		return defuse.action(discardPile, drawPile, player, target);</span>
+	}
+
+
+	public String getName() {
+<span class="fc" id="L42">		return this.name;</span>
+	}
+
+
+	public String getDescription() {
+<span class="nc" id="L47">		return this.description;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
