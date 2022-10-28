@@ -422,11 +422,15 @@ public class GameLogic {
 
                     return currentPlayer;
                 case 2: // Pair
+                    int size = 1;
+                    if (target.getHand().getCurrentSize() != 0)
+                        size = target.getHand().getCurrentSize();
                     question = MessageFactory.createMessage(
                             "Where in the hand of player " + target.getId()
                                     + " do you want to take a card from:\n",
                             new ArrayList<Choice>(Arrays.asList(new Choice("0", "first positon in the hand"),
-                                    new Choice(String.valueOf(Integer.valueOf(target.getHand().getCurrentSize())),
+                                    new Choice(
+                                            String.valueOf(size - 1),
                                             "last position in the hand"))),
                             1);
 

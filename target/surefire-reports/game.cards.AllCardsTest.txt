@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: game.cards.AllCardsTest
 -------------------------------------------------------------------------------
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.319 s - in game.cards.AllCardsTest
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.12 s - in game.cards.AllCardsTest

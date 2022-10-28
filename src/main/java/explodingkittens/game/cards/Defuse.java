@@ -46,11 +46,13 @@ public class Defuse implements Card {
 		Card explodingKitten = player.getHand().returnSpecificCardByName("ExplodingKitten");
 		player.sendMessage(MessageFactory.createMessage(
 				"Oh no you drew a Exploding kitten, but you used a defuse card!", null, 0));
-
+		int size = 1;
+		if (drawPile.getCards().size() != 0)
+			size = target.getHand().getCurrentSize();
 		Message question = MessageFactory.createMessage(
 				"Where in the deck do you wish to place the ExplodingKitten? \n",
 				new ArrayList<Choice>(Arrays.asList(new Choice("0", "top of the deck"),
-						new Choice(String.valueOf(drawPile.getCurrentSize() + 1), "bottom of the deck"))),
+						new Choice(String.valueOf(size - 1), "bottom of the deck"))),
 				1);
 
 		boolean validOption = false;
@@ -58,6 +60,7 @@ public class Defuse implements Card {
 
 			try {
 				player.sendMessage(question);
+
 				int positionInDeck = Integer.valueOf(player.readMessage(false)).intValue();
 				if (positionInDeck >= Integer.valueOf(question.getChoices().get(0).getChoice())
 						&& positionInDeck <= Integer

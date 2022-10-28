@@ -80,20 +80,13 @@ public class GameLogicTest {
     }
 
     @Test
-    public void randomPlayerStarts() { // This test is a bit wierd as you could get the same value as it is "Random"
-                                       // and testing randomness seams kinda pointless as with unit testing we want to
-                                       // test a value vs a expected value
-
-    }
-
-    @Test
     public void newPlayersTurnAfterPass() throws IOException, InterruptedException {
         gameLogic.getDrawPile().add(CardsFactory.createCard("Nope"), 0);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> Assertions.assertDoesNotThrow(() -> {
             gameLogic.startGame(a.getId());
         }));
-        executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        executor.awaitTermination(2000, TimeUnit.MILLISECONDS);
         client.getOutToServer().writeObject("Pass");
         executor.awaitTermination(2000, TimeUnit.MILLISECONDS);
         executor.shutdown();

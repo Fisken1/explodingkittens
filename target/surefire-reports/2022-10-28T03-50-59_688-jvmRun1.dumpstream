@@ -1,0 +1,254 @@
+# Created at 2022-10-28T03:51:21.256
+TestSet has not finished before stream error has appeared >> initializing exit by non-null configuration: null
+java.io.EOFException
+	at java.base/java.io.DataInputStream.readInt(DataInputStream.java:397)
+	at org.apache.maven.surefire.booter.MasterProcessCommand.decode(MasterProcessCommand.java:115)
+	at org.apache.maven.surefire.booter.CommandReader$CommandRunnable.run(CommandReader.java:391)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+
+
+# Created at 2022-10-28T03:51:35.369
+Unexpected IOException: 7,1,game.cards.AllCardsTest,ExplodingKittenCardWithDefuse,null,Connection reset,null,Connection reset,AllCardsTest.ExplodingKittenCardWithDefuse:97 \00BB Socket Connection reset,java.net.SocketException: Connection reset\000A\0009at game.cards.AllCardsTest.ExplodingKittenCardWithDefuse(AllCardsTest.java:97)\000A
+
+
+# Created at 2022-10-28T03:51:35.374
+Unexpected IOException: 5,1,game.cards.AllCardsTest,NopeCard,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.377
+Unexpected IOException: 6,1,game.cards.AllCardsTest,NopeCard,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.379
+Unexpected IOException: 5,1,game.cards.AllCardsTest,SeeTheFutureCard,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.384
+Unexpected IOException with stream: The top 3 cards from the draw pile are 
+
+
+
+# Created at 2022-10-28T03:51:35.386
+Unexpected IOException: 6,1,game.cards.AllCardsTest,SeeTheFutureCard,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.387
+Unexpected IOException: 5,1,game.cards.AllCardsTest,ShuffleCard,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.394
+Unexpected IOException with stream: The draw pile was shuffled
+
+
+
+# Created at 2022-10-28T03:51:35.396
+Unexpected IOException: 6,1,game.cards.AllCardsTest,ShuffleCard,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.400
+Unexpected IOException: 2,1,org.apache.maven.surefire.junitplatform.JUnitPlatformProvider,game.cards.AllCardsTest,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.403
+Unexpected IOException: 1,1,org.apache.maven.surefire.junitplatform.JUnitPlatformProvider,game.decks.MainDeckTest,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.405
+Unexpected IOException: 5,1,game.decks.MainDeckTest,coreGameUnder5Players,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.407
+Unexpected IOException: 6,1,game.decks.MainDeckTest,coreGameUnder5Players,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.410
+Unexpected IOException: 5,1,game.decks.MainDeckTest,shuffleDeck,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.412
+Unexpected IOException: 6,1,game.decks.MainDeckTest,shuffleDeck,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.414
+Unexpected IOException: 5,1,game.decks.MainDeckTest,checkNrExplodingKitten,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.416
+Unexpected IOException: 6,1,game.decks.MainDeckTest,checkNrExplodingKitten,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.418
+Unexpected IOException: 5,1,game.decks.MainDeckTest,coreGameAbove4Players,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.420
+Unexpected IOException: 6,1,game.decks.MainDeckTest,coreGameAbove4Players,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.422
+Unexpected IOException: 2,1,org.apache.maven.surefire.junitplatform.JUnitPlatformProvider,game.decks.MainDeckTest,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.431
+Unexpected IOException: 1,1,org.apache.maven.surefire.junitplatform.JUnitPlatformProvider,game.GameLogicTest,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.434
+Unexpected IOException: 5,1,game.GameLogicTest,newPlayersTurnAfterPass,null,null,null
+
+
+# Created at 2022-10-28T03:51:35.443
+Unexpected IOException with stream: Exception in thread "pool-2-thread-1" 
+
+# Created at 2022-10-28T03:51:35.444
+Unexpected IOException with stream: org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.net.BindException: Address already in use: NET_Bind
+
+# Created at 2022-10-28T03:51:35.445
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.446
+Unexpected IOException with stream: 	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:83)
+
+# Created at 2022-10-28T03:51:35.447
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.449
+Unexpected IOException with stream: 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:54)
+
+# Created at 2022-10-28T03:51:35.450
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.451
+Unexpected IOException with stream: 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:37)
+
+# Created at 2022-10-28T03:51:35.452
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.453
+Unexpected IOException with stream: 	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:2973)
+
+# Created at 2022-10-28T03:51:35.454
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.455
+Unexpected IOException with stream: 	at game.GameLogicTest.lambda$0(GameLogicTest.java:42)
+
+# Created at 2022-10-28T03:51:35.456
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.457
+Unexpected IOException with stream: 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+
+# Created at 2022-10-28T03:51:35.458
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.459
+Unexpected IOException with stream: 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+
+# Created at 2022-10-28T03:51:35.460
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.461
+Unexpected IOException with stream: 	at java.base/java.lang.Thread.run(Thread.java:829)
+
+# Created at 2022-10-28T03:51:35.462
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.463
+Unexpected IOException with stream: Caused by: java.net.BindException: Address already in use: NET_Bind
+
+# Created at 2022-10-28T03:51:35.464
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.465
+Unexpected IOException with stream: 	at java.base/java.net.PlainSocketImpl.bind0(Native Method)
+
+# Created at 2022-10-28T03:51:35.466
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.467
+Unexpected IOException with stream: 	at java.base/java.net.PlainSocketImpl.socketBind(PlainSocketImpl.java:132)
+
+# Created at 2022-10-28T03:51:35.468
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.469
+Unexpected IOException with stream: 	at java.base/java.net.AbstractPlainSocketImpl.bind(AbstractPlainSocketImpl.java:452)
+
+# Created at 2022-10-28T03:51:35.469
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.471
+Unexpected IOException with stream: 	at java.base/java.net.ServerSocket.bind(ServerSocket.java:395)
+
+# Created at 2022-10-28T03:51:35.471
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.472
+Unexpected IOException with stream: 	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:257)
+
+# Created at 2022-10-28T03:51:35.473
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.474
+Unexpected IOException with stream: 	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:149)
+
+# Created at 2022-10-28T03:51:35.475
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.477
+Unexpected IOException with stream: 	at network.Server.addPlayersAndBots(Server.java:41)
+
+# Created at 2022-10-28T03:51:35.479
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.480
+Unexpected IOException with stream: 	at game.GameLogicTest.lambda$1(GameLogicTest.java:43)
+
+# Created at 2022-10-28T03:51:35.481
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.482
+Unexpected IOException with stream: 	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:50)
+
+# Created at 2022-10-28T03:51:35.486
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:35.487
+Unexpected IOException with stream: 	... 6 more
+
+# Created at 2022-10-28T03:51:35.488
+Unexpected IOException with stream: 
+
+
+# Created at 2022-10-28T03:51:37.444
+Unexpected IOException: 7,1,game.GameLogicTest,newPlayersTurnAfterPass,null,Connection refused: connect,null,Connection refused: connect,GameLogicTest.initAllCardsTests:47 \00BB Connect Connection refused: connect,java.net.ConnectException: Connection refused: connect\000A\0009at game.GameLogicTest.initAllCardsTests(GameLogicTest.java:47)\000A
+
+
+# Created at 2022-10-28T03:51:37.446
+Unexpected IOException: 5,1,game.GameLogicTest,notifyAllPlayersThatWeHaveAWinner,null,null,null
+
+
+# Created at 2022-10-28T03:51:39.301
+Unexpected IOException with stream: Connected to player 1
+
+
