@@ -20,6 +20,15 @@ public class CatCard implements Card {
         return ableToTarget;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+     * player.Player, player.Player)
+     * 
+     * Discards the card and removes it from the players hand to make it eaiser when
+     * playing a pair or three of a kind then returns the target
+     */
     @Override
     public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
         discardPile.add(this, 0);

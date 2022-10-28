@@ -1,7 +1,7 @@
 package game.cards;
 
-import factory.MessageFactory;
 import game.decks.*;
+import messages.MessageFactory;
 import player.Player;
 
 public class ExplodingKitten implements Card {
@@ -21,6 +21,17 @@ public class ExplodingKitten implements Card {
 		return ableToTarget;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+	 * player.Player, player.Player)
+	 * 
+	 * Discards the card then looks to see if the player has a Defuse card if that
+	 * is the case we use that card else informes the player that they exploded then
+	 * discards all the cards in their hand and returnes the target to set it as the
+	 * next current player
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		discardPile.add(this, 0);

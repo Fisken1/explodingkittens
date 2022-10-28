@@ -1,11 +1,8 @@
 package game;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -17,13 +14,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import communication.messages.Message;
-import communication.network.Client;
-import communication.network.Server;
-import factory.CardsFactory;
-import factory.MessageFactory;
+import game.cards.CardsFactory;
 import game.decks.DiscardPile;
 import game.decks.MainDeck;
+import network.Client;
+import network.Server;
 import player.Player;
 
 public class GameLogicTest {
@@ -157,5 +152,4 @@ public class GameLogicTest {
 
     }
 
-    
 }

@@ -1,8 +1,8 @@
 package game.cards;
 
 import player.Player;
-import factory.MessageFactory;
 import game.decks.*;
+import messages.MessageFactory;
 
 public class Skip implements Card {
 
@@ -21,6 +21,16 @@ public class Skip implements Card {
 		return ableToTarget;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+	 * player.Player, player.Player)
+	 * 
+	 * informes the player that they skipped A turn without drawing a card. return
+	 * the appropriate Player based on the current amount of turnes of the player
+	 * that played this card.
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		player.sendMessage(MessageFactory.createMessage("Skip", null, 0));

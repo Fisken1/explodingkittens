@@ -12,6 +12,9 @@ public class DiscardPile implements Deck {
 		this.Cards = new ArrayList<Card>();
 	}
 
+	/**
+	 * @return the number of nope cards played in a row
+	 */
 	public int getNrNope() {
 		int i = 0;
 		while (i < getCurrentSize() && Cards.get(i).getName().equals("Nope")) {

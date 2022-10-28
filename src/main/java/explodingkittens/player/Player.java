@@ -1,14 +1,10 @@
 package player;
 
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-import communication.messages.Choice;
-import communication.messages.Message;
-import game.cards.Card;
-import game.cards.CatCard;
 import game.decks.*;
+import messages.Message;
 
 import java.io.*;
 
@@ -21,13 +17,22 @@ public class Player {
 	private boolean exploded = false;
 	private ObjectInputStream inFromClient;
 	private ObjectOutputStream outToClient;
-	private Hand hand;
+	public Hand hand;
 	private int secondsToInterruptWithNope = 5;
 	private int numberOfTurnsToTake = 1;
 	private String state;
 
 	Scanner in = new Scanner(System.in);
 
+	/**
+	 * @param playerID     the id of the player
+	 * @param isBot        true if the player is a bot else false
+	 * @param connection   the socket from the server
+	 * @param inFromClient a ObjectInputStream given from the sever to handle
+	 *                     messages from the client
+	 * @param outToClient  a ObjectOutputStream given from the sever to handle
+	 *                     messages to the client
+	 */
 	public Player(int playerID, boolean isBot, Socket connection, ObjectInputStream inFromClient,
 			ObjectOutputStream outToClient) {
 		this.state = "Normal";
@@ -43,18 +48,10 @@ public class Player {
 			this.online = true;
 	}
 
-	public ObjectInputStream getInFromClient() {
-		return inFromClient;
-	}
-
-	public ObjectOutputStream getOutToClient() {
-		return outToClient;
-	}
-
-	public boolean isBot() {
-		return isBot;
-	}
-
+	/**
+	 * @param message the message you want to send to the client if online else
+	 *                print the in the console
+	 */
 	public void sendMessage(Message message) {
 		if (!this.isBot) {
 			if (online) {
@@ -63,13 +60,20 @@ public class Player {
 				} catch (Exception e) {
 				}
 			} else if (!isBot) {
-				System.out.println(message.getMessage() + message.getChoicesAsString());
+				System.out.println(message.getContents() + message.getChoicesAsString());
 			}
 		} else {
 			// Bots not yet implemented
 		}
 	}
 
+	/**
+	 * @param interruptable if the reading of the message from the sever is
+	 *                      interruptable or not
+	 * @return if online the word from the client else check if the message is
+	 *         interruptable then make it possible to press enter to nope else take
+	 *         input from terminal via a scanner
+	 */
 	public String readMessage(boolean interruptable) {
 		String word = " ";
 		if (!this.isBot) {
@@ -108,39 +112,6 @@ public class Player {
 		return word;
 	}
 
-	public ArrayList<Choice> playerChoices(Deck discardPile) {
-		boolean contains = false;
-		ArrayList<Choice> choices = new ArrayList<Choice>();
-		for (Card card : this.hand.getCards()) {
-			for (Choice c : choices) {
-				if (c.getChoice().contains(card.getName())) {
-					contains = true;
-					break;
-				}
-			}
-			if (choices.size() > 0) {
-				if (!contains) {
-					if (card.getClass() != CatCard.class)
-						choices.add(new Choice(card.getName(), card.getDescription()));
-					int count = this.getHand().occurenceOf(card.getName());
-					if (count >= 2) {
-						choices.add(new Choice(card.getName() + " " + 2, "(You can play this card as a pair)"));
-					}
-					if (count >= 3) {
-						choices.add(
-								new Choice(card.getName() + " " + 3, "(You can play this card as three of a kind)"));
-					}
-					contains = false;
-				}
-			} else if (!contains) {
-				choices.add(new Choice(card.getName(), card.getDescription())); // WILL NOT WORK I THINK
-			}
-			contains = false;
-		}
-		choices.add(new Choice("Pass", "(End you turn and draw a card)"));
-		return choices;
-	}
-
 	public Hand getHand() {
 		return this.hand;
 	}
@@ -171,6 +142,18 @@ public class Player {
 
 	public Integer getId() {
 		return this.playerID;
+	}
+
+	public ObjectInputStream getInFromClient() {
+		return inFromClient;
+	}
+
+	public ObjectOutputStream getOutToClient() {
+		return outToClient;
+	}
+
+	public boolean isBot() {
+		return isBot;
 	}
 
 }

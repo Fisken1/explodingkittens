@@ -3,10 +3,10 @@ package game.cards;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import communication.messages.Choice;
-import communication.messages.Message;
-import factory.MessageFactory;
 import game.decks.*;
+import messages.Choice;
+import messages.Message;
+import messages.MessageFactory;
 import player.Player;
 
 public class Defuse implements Card {
@@ -26,6 +26,18 @@ public class Defuse implements Card {
 		return ableToTarget;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+	 * player.Player, player.Player)
+	 * 
+	 * discards the card and informes the player that they defused the exploding
+	 * kitten then promts them to place it in the draw pile. If the input is valid
+	 * the exploding kitten is placed into the draw pile at the selected location.
+	 * Then returnes the target to set it as the new current player!
+	 * 
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		discardPile.add(this, 0);

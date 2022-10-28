@@ -1,7 +1,7 @@
 package game.cards;
 
-import factory.MessageFactory;
 import game.decks.*;
+import messages.MessageFactory;
 import player.Player;
 
 public class Favor implements Card {
@@ -21,6 +21,17 @@ public class Favor implements Card {
 		return ableToTarget;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+	 * player.Player, player.Player)
+	 * 
+	 * Promts the target that the player has played a favor card and you need to
+	 * give a card to them. Then it promts the target with all the cards in thier
+	 * hand. Then when the target has given a valid answer give that card to the
+	 * player and remove it from the targets hand then return player.
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		boolean viableOption = false;

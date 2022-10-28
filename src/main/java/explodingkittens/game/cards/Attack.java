@@ -1,7 +1,7 @@
 package game.cards;
 
-import factory.MessageFactory;
 import game.decks.*;
+import messages.MessageFactory;
 import player.Player;
 
 public class Attack implements Card {
@@ -16,11 +16,17 @@ public class Attack implements Card {
 		this.ableToTarget = false;
 	}
 
-	@Override
-	public boolean isAbleToTarget() {
-		return ableToTarget;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+	 * player.Player, player.Player)
+	 * 
+	 * Sets the targets state to attacked to keep track, then checks the current
+	 * players state to see if it is attacked. If that is the case we give the
+	 * target 2 + the current amount of turns the current player has
+	 * else set the targets turn to 2. Then return the target!
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		target.setState("Attacked");
@@ -33,6 +39,16 @@ public class Attack implements Card {
 		}
 		player.setNumberOfTurns(0);
 		return target;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#isAbleToTarget()
+	 */
+	@Override
+	public boolean isAbleToTarget() {
+		return ableToTarget;
 	}
 
 	@Override

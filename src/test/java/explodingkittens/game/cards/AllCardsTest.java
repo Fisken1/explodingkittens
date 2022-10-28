@@ -6,9 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import communication.network.Client;
-import communication.network.Server;
-
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -16,10 +13,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import factory.CardsFactory;
-
 import game.decks.DiscardPile;
 import game.decks.MainDeck;
+import network.Client;
+import network.Server;
 import player.Player;
 
 public class AllCardsTest {
@@ -30,7 +27,7 @@ public class AllCardsTest {
     Player target;
 
     @BeforeEach
-    public void initAllCardsTests() throws Exception {
+    public void initAllCardsTests() {
         discardPile = new DiscardPile();
         drawPile = new MainDeck();
         player = new Player(0, false, null, null, null);

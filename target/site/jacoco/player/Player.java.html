@@ -4,11 +4,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import communication.messages.Choice;
-import communication.messages.Message;
 import game.cards.Card;
 import game.cards.CatCard;
 import game.decks.*;
+import transmission.messages.Choice;
+import transmission.messages.Message;
 
 import java.io.*;
 
@@ -18,30 +18,30 @@ public class Player {
 	private boolean isBot;
 
 	private Socket connection;
-<span class="fc" id="L21">	private boolean exploded = false;</span>
+<span class="nc" id="L21">	private boolean exploded = false;</span>
 	private ObjectInputStream inFromClient;
 	private ObjectOutputStream outToClient;
 	private Hand hand;
-<span class="fc" id="L25">	private int secondsToInterruptWithNope = 5;</span>
-<span class="fc" id="L26">	private int numberOfTurnsToTake = 1;</span>
+<span class="nc" id="L25">	private int secondsToInterruptWithNope = 5;</span>
+<span class="nc" id="L26">	private int numberOfTurnsToTake = 1;</span>
 	private String state;
 
-<span class="fc" id="L29">	Scanner in = new Scanner(System.in);</span>
+<span class="nc" id="L29">	Scanner in = new Scanner(System.in);</span>
 
-<span class="fc" id="L31">	public Player(int playerID, boolean isBot, Socket connection, ObjectInputStream inFromClient,</span>
-			ObjectOutputStream outToClient) {
-<span class="fc" id="L33">		this.state = &quot;Normal&quot;;</span>
-<span class="fc" id="L34">		this.playerID = playerID;</span>
-<span class="fc" id="L35">		this.connection = connection;</span>
-<span class="fc" id="L36">		this.inFromClient = inFromClient;</span>
-<span class="fc" id="L37">		this.outToClient = outToClient;</span>
-<span class="fc" id="L38">		this.isBot = isBot;</span>
-<span class="fc" id="L39">		this.hand = new Hand();</span>
-<span class="fc bfc" id="L40" title="All 2 branches covered.">		if (connection == null)</span>
-<span class="fc" id="L41">			this.online = false;</span>
+	public Player(int playerID, boolean isBot, Socket connection, ObjectInputStream inFromClient,
+<span class="nc" id="L32">			ObjectOutputStream outToClient) {</span>
+<span class="nc" id="L33">		this.state = &quot;Normal&quot;;</span>
+<span class="nc" id="L34">		this.playerID = playerID;</span>
+<span class="nc" id="L35">		this.connection = connection;</span>
+<span class="nc" id="L36">		this.inFromClient = inFromClient;</span>
+<span class="nc" id="L37">		this.outToClient = outToClient;</span>
+<span class="nc" id="L38">		this.isBot = isBot;</span>
+<span class="nc" id="L39">		this.hand = new Hand();</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">		if (connection == null)</span>
+<span class="nc" id="L41">			this.online = false;</span>
 		else
-<span class="fc" id="L43">			this.online = true;</span>
-<span class="fc" id="L44">	}</span>
+<span class="nc" id="L43">			this.online = true;</span>
+<span class="nc" id="L44">	}</span>
 
 	public ObjectInputStream getInFromClient() {
 <span class="nc" id="L47">		return inFromClient;</span>
@@ -56,19 +56,19 @@ public class Player {
 	}
 
 	public void sendMessage(Message message) {
-<span class="pc bpc" id="L59" title="1 of 2 branches missed.">		if (!this.isBot) {</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">			if (online) {</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">		if (!this.isBot) {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">			if (online) {</span>
 				try {
-<span class="fc" id="L62">					outToClient.writeObject(message);</span>
-<span class="pc" id="L63">				} catch (Exception e) {</span>
-				}
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">			} else if (!isBot) {</span>
-<span class="fc" id="L66">				System.out.println(message.getMessage() + message.getChoicesAsString());</span>
+<span class="nc" id="L62">					outToClient.writeObject(message);</span>
+<span class="nc" id="L63">				} catch (Exception e) {</span>
+<span class="nc" id="L64">				}</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">			} else if (!isBot) {</span>
+<span class="nc" id="L66">				System.out.println(message.getMessage() + message.getChoicesAsString());</span>
 			}
 		} else {
 			// Bots not yet implemented
 		}
-<span class="fc" id="L71">	}</span>
+<span class="nc" id="L71">	}</span>
 
 	public String readMessage(boolean interruptable) {
 <span class="nc" id="L74">		String word = &quot; &quot;;</span>
@@ -77,7 +77,7 @@ public class Player {
 				try {
 <span class="nc" id="L78">					synchronized (inFromClient) {</span>
 <span class="nc" id="L79">						word = (String) inFromClient.readObject();</span>
-					}
+<span class="nc" id="L80">					}</span>
 <span class="nc" id="L81">				} catch (Exception e) {</span>
 <span class="nc" id="L82">					System.out.println(&quot;Reading from client failed: &quot; +</span>
 <span class="nc" id="L83">							e.getMessage());</span>
@@ -89,19 +89,19 @@ public class Player {
 <span class="nc" id="L89">						BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</span>
 <span class="nc" id="L90">						int millisecondsWaited = 0;</span>
 <span class="nc bnc" id="L91" title="All 4 branches missed.">						while (!br.ready() &amp;&amp;</span>
-<span class="nc" id="L92">								millisecondsWaited &lt; (secondsToInterruptWithNope * 1000)) {</span>
+								millisecondsWaited &lt; (secondsToInterruptWithNope * 1000)) {
 <span class="nc" id="L93">							Thread.sleep(200);</span>
 <span class="nc" id="L94">							millisecondsWaited += 200;</span>
 						}
 <span class="nc bnc" id="L96" title="All 2 branches missed.">						if (br.ready())</span>
 <span class="nc" id="L97">							return br.readLine();</span>
-					} else {
+<span class="nc" id="L98">					} else {</span>
 <span class="nc" id="L99">						in = new Scanner(System.in);</span>
 <span class="nc" id="L100">						word = in.nextLine();</span>
 					}
 <span class="nc" id="L102">				} catch (Exception e) {</span>
 <span class="nc" id="L103">					System.out.println(e.getMessage());</span>
-				}
+<span class="nc" id="L104">				}</span>
 		} else {
 			// Bots not yet implemented
 		}
@@ -117,7 +117,7 @@ public class Player {
 <span class="nc" id="L117">					contains = true;</span>
 <span class="nc" id="L118">					break;</span>
 				}
-			}
+<span class="nc" id="L120">			}</span>
 <span class="nc bnc" id="L121" title="All 2 branches missed.">			if (choices.size() &gt; 0) {</span>
 <span class="nc bnc" id="L122" title="All 2 branches missed.">				if (!contains) {</span>
 <span class="nc bnc" id="L123" title="All 2 branches missed.">					if (card.getClass() != CatCard.class)</span>
@@ -131,43 +131,43 @@ public class Player {
 <span class="nc" id="L131">								new Choice(card.getName() + &quot; &quot; + 3, &quot;(You can play this card as three of a kind)&quot;));</span>
 					}
 <span class="nc" id="L133">					contains = false;</span>
-				}
+<span class="nc" id="L134">				}</span>
 <span class="nc bnc" id="L135" title="All 2 branches missed.">			} else if (!contains) {</span>
 <span class="nc" id="L136">				choices.add(new Choice(card.getName(), card.getDescription())); // WILL NOT WORK I THINK</span>
 			}
 <span class="nc" id="L138">			contains = false;</span>
-		}
+<span class="nc" id="L139">		}</span>
 <span class="nc" id="L140">		choices.add(new Choice(&quot;Pass&quot;, &quot;(End you turn and draw a card)&quot;));</span>
 <span class="nc" id="L141">		return choices;</span>
 	}
 
 	public Hand getHand() {
-<span class="fc" id="L145">		return this.hand;</span>
+<span class="nc" id="L145">		return this.hand;</span>
 	}
 
 	public String getState() {
-<span class="fc" id="L149">		return this.state;</span>
+<span class="nc" id="L149">		return this.state;</span>
 	}
 
 	public void setState(String newState) {
-<span class="fc" id="L153">		this.state = newState;</span>
-<span class="fc" id="L154">	}</span>
+<span class="nc" id="L153">		this.state = newState;</span>
+<span class="nc" id="L154">	}</span>
 
 	public Integer getNumberOfTurns() {
-<span class="fc" id="L157">		return numberOfTurnsToTake;</span>
+<span class="nc" id="L157">		return numberOfTurnsToTake;</span>
 	}
 
 	public void setNumberOfTurns(Integer turns) {
-<span class="fc" id="L161">		this.numberOfTurnsToTake = turns;</span>
-<span class="fc" id="L162">	}</span>
+<span class="nc" id="L161">		this.numberOfTurnsToTake = turns;</span>
+<span class="nc" id="L162">	}</span>
 
 	public boolean getExploded() {
-<span class="fc" id="L165">		return this.exploded;</span>
+<span class="nc" id="L165">		return this.exploded;</span>
 	}
 
 	public void setExploded(boolean exploded) {
-<span class="fc" id="L169">		this.exploded = exploded;</span>
-<span class="fc" id="L170">	}</span>
+<span class="nc" id="L169">		this.exploded = exploded;</span>
+<span class="nc" id="L170">	}</span>
 
 	public Integer getId() {
 <span class="nc" id="L173">		return this.playerID;</span>

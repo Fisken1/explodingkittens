@@ -10,11 +10,11 @@ public class ExplodingKitten implements Card {
 	private String description;
 	private boolean ableToTarget;
 
-<span class="fc" id="L13">	public ExplodingKitten() {</span>
-<span class="fc" id="L14">		this.name = &quot;ExplodingKitten&quot;;</span>
-<span class="fc" id="L15">		this.description = &quot;(Unless you have a Defuse Card, you are dead)&quot;;</span>
-<span class="fc" id="L16">		this.ableToTarget = false;</span>
-<span class="fc" id="L17">	}</span>
+<span class="nc" id="L13">	public ExplodingKitten() {</span>
+<span class="nc" id="L14">		this.name = &quot;ExplodingKitten&quot;;</span>
+<span class="nc" id="L15">		this.description = &quot;(Unless you have a Defuse Card, you are dead)&quot;;</span>
+<span class="nc" id="L16">		this.ableToTarget = false;</span>
+<span class="nc" id="L17">	}</span>
 
 	@Override
 	public boolean isAbleToTarget() {
@@ -23,17 +23,17 @@ public class ExplodingKitten implements Card {
 
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
-<span class="fc" id="L26">		discardPile.add(this, 0);</span>
-<span class="fc" id="L27">		drawPile.getCards().remove(this);</span>
-<span class="pc bpc" id="L28" title="1 of 2 branches missed.">		if (!player.getHand().containsCardWithName(&quot;Defuse&quot;)) {</span>
-<span class="fc" id="L29">			player.sendMessage(</span>
-<span class="fc" id="L30">					MessageFactory.createMessage(&quot;Oh no you drew a Exploding kitten, you exploded!&quot;, null, 0));</span>
-<span class="fc" id="L31">			player.setExploded(true);</span>
-<span class="fc bfc" id="L32" title="All 2 branches covered.">			for (int i = 0; i &lt; player.getHand().getCards().size(); i++) {</span>
-<span class="fc" id="L33">				discardPile.add(player.getHand().getCards().get(i), 0);</span>
+<span class="nc" id="L26">		discardPile.add(this, 0);</span>
+<span class="nc" id="L27">		drawPile.getCards().remove(this);</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">		if (!player.getHand().containsCardWithName(&quot;Defuse&quot;)) {</span>
+<span class="nc" id="L29">			player.sendMessage(</span>
+<span class="nc" id="L30">					MessageFactory.createMessage(&quot;Oh no you drew a Exploding kitten, you exploded!&quot;, null, 0));</span>
+<span class="nc" id="L31">			player.setExploded(true);</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">			for (int i = 0; i &lt; player.getHand().getCards().size(); i++) {</span>
+<span class="nc" id="L33">				discardPile.add(player.getHand().getCards().get(i), 0);</span>
 			}
-<span class="fc" id="L35">			player.getHand().getCards().clear();</span>
-<span class="fc" id="L36">			return target;</span>
+<span class="nc" id="L35">			player.getHand().getCards().clear();</span>
+<span class="nc" id="L36">			return target;</span>
 		}
 <span class="nc" id="L38">		player.getHand().add(this, 0);</span>
 <span class="nc" id="L39">		Card defuse = player.getHand().returnSpecificCardByName(&quot;Defuse&quot;);</span>
@@ -42,7 +42,7 @@ public class ExplodingKitten implements Card {
 
 	@Override
 	public String getName() {
-<span class="fc" id="L45">		return this.name;</span>
+<span class="nc" id="L45">		return this.name;</span>
 	}
 
 	@Override

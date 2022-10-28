@@ -2,19 +2,19 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import communication.messages.Choice;
-import communication.messages.Message;
-import communication.network.Server;
-import factory.*;
 import game.cards.Card;
+import game.cards.CardsFactory;
 import game.decks.*;
+import messages.Choice;
+import messages.Message;
+import messages.MessageFactory;
+import network.Server;
 import player.Player;
 import utility.interactableCardThread;
 
@@ -31,6 +31,10 @@ public class GameLogic {
     /**
      * @param numPlayers number of players to start the game with
      * @param numBots    number of bots to start the game with
+     * 
+     *                   creates the discard pile, draw pile and server. Then gets
+     *                   all the players from the server.
+     * 
      */
     public GameLogic(int numPlayers, int numBots) {
         this.discardPile = new DiscardPile();
@@ -40,13 +44,25 @@ public class GameLogic {
     }
 
     /**
-     * @param startPlayer
-     * @param deck
-     * @throws Exception
+     * @param startPlayer the randomly choosen player who starts
+     * @throws Exception throws if something goes wrong in handlecombo or
+     *                   handlechoice
+     * 
+     *                   Presents all the players with a welcome message then
+     *                   presents the current player with his hand, optionsn number
+     *                   of turns, targets and so on. Then waits for a response from
+     *                   the current player. If the choices the player has contain
+     *                   this response we check if the response is a combo or a
+     *                   normal card. Then the card is handled by the appropriate
+     *                   function. else we tell the player that the response is not
+     *                   valid try again. This will go on
+     *                   ntil the player has no more turns. After a player has
+     *                   played thier turns we check if we have a winner. if we do
+     *                   we exit the game else it is the turn of the next player.
      */
     public void startGame(int startingPlayer) throws Exception {
 
-        setCurrentPlayer(allPlayers.get(startingPlayer)); // CHNAGE THIS BACK TO "STARTPLAYER"
+        setCurrentPlayer(allPlayers.get(startingPlayer));
         int playersLeft = allPlayers.size();
         allCardNames = drawPile.allCardNames();
         Message welcomeMessage = MessageFactory
@@ -56,7 +72,7 @@ public class GameLogic {
         while (playersLeft > 1) {
             Message options = MessageFactory
                     .createMessage("Options",
-                            currentPlayer.playerChoices(discardPile), 1);
+                            currentPlayer.getHand().playerChoices(), 1);
 
             if (!currentPlayer.isBot()) {
                 currentPlayer.sendMessage(MessageFactory
@@ -124,11 +140,24 @@ public class GameLogic {
 
     }
 
+    /**
+     * @return the next player whos turn it is
+     * 
+     *         Removes a turn from the currentplayers turn
+     */
     private Player playPass() {
         currentPlayer.setNumberOfTurns(currentPlayer.getNumberOfTurns() - 1);
         return drawCard(currentPlayer);
     }
 
+    /**
+     * @param currentPlayer the player whos turn it is
+     * @param playersLeft   the amount of players left in the game
+     * @return true if a winner has been found else false
+     * 
+     *         Checks if we have got a winner then notify all the players that we
+     *         have a winner else continue the game
+     */
     public boolean checkWinner(Player currentPlayer, int playersLeft) {
         if (playersLeft == 1) {
             setCurrentPlayer(nextPlayer);
@@ -146,12 +175,25 @@ public class GameLogic {
         return false;
     }
 
+    /**
+     * @param currentPlayer the player whos turn it is
+     * 
+     *                      The answer currentPlayer gave was not valid so notify
+     *                      the player that is was not valid
+     * 
+     */
     private void presentNotValid(Player currentPlayer) {
         currentPlayer.sendMessage(MessageFactory.createMessage(
                 "NotValid",
                 null, 0));
     }
 
+    /**
+     * @param currentPlayer the player whos turn it is
+     * 
+     *                      presents who exploded to all players
+     * 
+     */
     private void presentExploded(Player currentPlayer) {
         Message exploded = MessageFactory.createMessage(
                 "Player " + currentPlayer.getId()
@@ -160,22 +202,41 @@ public class GameLogic {
         notifyAllPlayers(currentPlayer, exploded, exploded);
     }
 
-    private void presentCorrectSyntax(Player currentPlayer, String response) {
+    /**
+     * @param currentPlayer the player whos turn it is
+     * @param input         the input from currentPlayer
+     * 
+     *                      If you enter the wrong syntax you present the player
+     *                      with the correct one if one exists
+     */
+    private void presentCorrectSyntax(Player currentPlayer, String input) {
         currentPlayer
                 .sendMessage(MessageFactory.createMessage(
-                        "Wrong syntax when you entered " + response + " the correct syntax is "
-                                + correctSyntax(response),
+                        "Wrong syntax when you entered " + input + " the correct syntax is "
+                                + correctSyntax(
+                                        input),
                         null, 0));
     }
 
+    /**
+     * @param currentPlayer the player whos turn it is
+     * 
+     *                      presents all avaliable targets for the player if the
+     *                      player has a target card
+     */
     private void presentTargets(Player currentPlayer) {
         if (currentPlayer.getHand().containsTargetingCard()) {
             currentPlayer.sendMessage(MessageFactory
-                    .createMessage("\nYou can interact players with id's: ",
+                    .createMessage("\nYou can interact with players that have id's: ",
                             getAllPlayerIds(allPlayers, currentPlayer), 0));
         }
     }
 
+    /**
+     * @param currentPlayer the player whos turn it is
+     * 
+     *                      presents the hand of the player to the player
+     */
     private void presentHand(Player currentPlayer) {
         currentPlayer
                 .sendMessage(MessageFactory
@@ -183,6 +244,11 @@ public class GameLogic {
                                 currentPlayer.getHand().getCardNamesAsChoices(), 0));
     }
 
+    /**
+     * @param currentPlayer the player whos turn it is
+     * 
+     *                      presents the amount of turn you have left
+     */
     private void presentTurns(Player currentPlayer) {
         currentPlayer
                 .sendMessage(MessageFactory.createMessage("\nYou have " + currentPlayer.getNumberOfTurns()
@@ -191,11 +257,23 @@ public class GameLogic {
     }
 
     /**
-     * @param choice
-     * @param currentPlayer
-     * @return
-     * @throws InterruptedException
-     * @throws ExecutionException
+     * @param choice        the input you gave split up
+     * @param currentPlayer the player whos turn it is
+     * @return a player based on conditions
+     * @throws InterruptedException if something goes wrong with
+     *                              interactCardPlayed()
+     * @throws ExecutionException   if something goes wrong with
+     *                              interactCardPlayed()
+     * 
+     *                              If the card is targetable find target, if the
+     *                              target is bad return null and tell player to try
+     *                              again. If the lenght of you input is to long for
+     *                              a certain card return null. Discard the card
+     *                              then see if anyone wants to play a nope card. If
+     *                              no one played a nope card then do the action of
+     *                              the card and return that player. Else return
+     *                              currentPlayer.
+     * 
      */
     private Player handleChoice(String[] choice, Player currentPlayer) throws InterruptedException, ExecutionException {
         Card cardPlayed = currentPlayer.getHand().returnSpecificCardByName(choice[0]);
@@ -226,12 +304,37 @@ public class GameLogic {
     }
 
     /**
-     * @param currentPlayer
-     * @param target
-     * @param combo
-     * @throws NumberFormatException
-     * @throws InterruptedException
-     * @throws ExecutionException
+     * @param currentPlayer the player whos turn it is
+     * @param combo         the input given by the player
+     * @throws NumberFormatException if the player dont give a int when asked
+     * @throws InterruptedException  handles interactCardPlayed
+     * @throws ExecutionException    handles interactCardPlayed
+     * 
+     *                               This function first finds the card you just
+     *                               played then tries to find the target, if not
+     *                               found return null else continue. then remove
+     *                               the specified amount of the card you played
+     *                               from your hand and add them to the discard
+     *                               pile. Then see if anyone wants to play a nope.
+     *                               if the combocard played was nope remove that
+     *                               many nope from the discard pile then check
+     *                               if the number of nopes played is even then
+     *                               continue else return currentPlayer.
+     * 
+     *                               If you played a three of a kind you play go
+     *                               fish (finns i sjön) and if the player has the
+     *                               card you asked for you get it else return the
+     *                               current player. If the value entered by the
+     *                               player was not valid present that.
+     * 
+     *                               If you played a pair you can pick a place in
+     *                               the targets deck to get that card. The card you
+     *                               stole will be presented. If the value
+     *                               entered by the player was not valid present
+     *                               that.
+     * 
+     * 
+     * 
      */
     private Player handleCombo(Player currentPlayer, String combo[])
             throws NumberFormatException, InterruptedException, ExecutionException {
@@ -263,7 +366,7 @@ public class GameLogic {
 
         if (nopesPlayed % 2 == 0) {
             switch (comboValue) {
-                case 3:
+                case 3: // Three of a kind
                     boolean option = false;
 
                     question = MessageFactory
@@ -318,7 +421,7 @@ public class GameLogic {
                     }
 
                     return currentPlayer;
-                case 2:
+                case 2: // Pair
                     question = MessageFactory.createMessage(
                             "Where in the hand of player " + target.getId()
                                     + " do you want to take a card from:\n",
@@ -375,9 +478,11 @@ public class GameLogic {
     }
 
     /**
-     * @param args
-     * @param currentPlayer
-     * @return
+     * @param args          the input you gave but split up
+     * @param currentPlayer the player whos turn it is
+     * @return true if the lenght if args is three (example: TacoCat 2 0) and
+     *         currentPlayers hand contain greater or eaqual to two of the cards you
+     *         want to play. Else false.
      */
     private boolean isCombo(String[] args, Player currentPlayer) {
         if (args.length == 3 && currentPlayer.getHand().occurenceOf(args[0]) >= 2) {
@@ -387,8 +492,12 @@ public class GameLogic {
     }
 
     /**
-     * @param currentPlayer The player whos turn it is
-     * @return
+     * @param currentPlayer the player whos turn it is
+     * @return the next player whos turn it is
+     * 
+     *         It tries to return the next player inm allPlayers but if that player
+     *         is exploded then recursivly call the function to find a suitable
+     *         target!
      */
     private Player switchCurrentPlayer(Player currentPlayer) {
         int nextID = ((currentPlayer.getId() + 1) < allPlayers.size() ? (currentPlayer.getId()) + 1 : 0);
@@ -402,7 +511,8 @@ public class GameLogic {
     /**
      * @param players       All the player that are in the game
      * @param currentPlayer The player whos turn it is
-     * @return Return a ArrayList<Choice> containing all player ids
+     * @return Return a ArrayList<Choice> containing all player ids except the
+     *         currentPlayers id or if a player has exploded
      */
     private ArrayList<Choice> getAllPlayerIds(ArrayList<Player> players, Player currentPlayer) {
         ArrayList<Choice> ids = new ArrayList<Choice>();
@@ -416,8 +526,9 @@ public class GameLogic {
     /**
      * @param currentPlayer the current player who is drawing a card after a turn
      *                      has ended
-     * @return return nothing if the draw pile is empety or if the player drew a
-     *         ExplodingKitten card
+     * @return return the next player if the draw pile is empty or if the player
+     *         dont draw a exploding kittens. Else return the player who is returned
+     *         by using the action on the exploding kitten card.
      */
     private Player drawCard(Player currentPlayer) {
         if (drawPile.getCards().size() == 0) {
@@ -441,8 +552,10 @@ public class GameLogic {
     }
 
     /**
-     * @param id
-     * @return
+     * @param id contains the id we want to find aswell as the other inputs you gave
+     *           to know where to look
+     * @return the target if the target is not exploded or if the target is not
+     *         yourself else null (no target found)
      */
     private Player findTarget(final String[] id, Player currentPlayer) {
         if (id.length == 2 && currentPlayer.getId() != Integer.valueOf(id[1])
@@ -462,8 +575,8 @@ public class GameLogic {
     }
 
     /**
-     * @param response
-     * @return
+     * @param response the input you gave
+     * @return the correct syntax if it exsits.
      */
     private String correctSyntax(String response) {
         switch (response) {
@@ -492,9 +605,14 @@ public class GameLogic {
     }
 
     /**
-     * @param currentPlayer
-     * @param currentPlayerMessage
-     * @param otherPlayerMessage
+     * @param currentPlayer        the player whos turn it is
+     * @param currentPlayerMessage the message you want to send to currentPlayer
+     * @param otherPlayerMessage   the message you want to send to all other players
+     * 
+     *                             sends messgaes to all players and you can modify
+     *                             what message you send to the currentPlayer and
+     *                             what Message you send to all other players.
+     * 
      */
     private void notifyAllPlayers(Player currentPlayer, Message currentPlayerMessage, Message otherPlayerMessage) {
         for (Player p : allPlayers) {
@@ -513,10 +631,28 @@ public class GameLogic {
     }
 
     /**
-     * @param currentPlayer
-     * @param cardPlayed
-     * @throws InterruptedException
-     * @throws ExecutionException
+     * @param currentPlayer the player whos turn it is
+     * @param cardPlayed    the card that was just played
+     * @throws InterruptedException handels recursion calls
+     * @throws ExecutionException   handels recursion calls
+     * 
+     *                              This functions checks if the current player is a
+     *                              bot if not we create a thread pool with the size
+     *                              of all players -1 as you cant nope yourself.
+     *                              Then it creates a completion service with the
+     *                              threadpool. Then it creates a arraylist
+     *                              containing the choices you have, either play
+     *                              nope or no. Then for all players who have a nope
+     *                              card that is not yourself ask them if they want
+     *                              to nope. If anyone press enter and thereby using
+     *                              a
+     *                              nopecard the completion service takes the first
+     *                              thread who press nope and then recursivly calls
+     *                              this funciton until no one wants to nope or if
+     *                              no one has any nope cards left with the nope
+     *                              card just played and the person who used nope as
+     *                              the currentPlayer.
+     * 
      */
     private void interactCardPlayed(Player currentPlayer, Card cardPlayed)
             throws InterruptedException, ExecutionException {
@@ -525,7 +661,6 @@ public class GameLogic {
             CompletionService<Player> completionService = new ExecutorCompletionService<Player>(threadpool);
             boolean nopeExists = false;
             int nopePlayed = discardPile.getNrNope();
-            // CHANGE
             ArrayList<Choice> choices = new ArrayList<Choice>();
             choices.add(new Choice("\nPlay nope", "Press <Enter>"));
             choices.add(new Choice("\nDont play nope", "wait"));
@@ -566,6 +701,9 @@ public class GameLogic {
 
     }
 
+    /**
+     * Deal cards to all players
+     */
     public void dealCards() {
         for (Player player : allPlayers) {
             for (int i = 0; i < 7; i++) {
@@ -574,6 +712,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Deal defuse cards to all players
+     */
     public void dealDefuseCards() {
         for (Player player : allPlayers) {
             player.getHand().add(CardsFactory.createCard("Defuse"), 0);

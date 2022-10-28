@@ -9,13 +9,13 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import communication.messages.Choice;
-import communication.messages.Message;
-import communication.network.Server;
 import factory.*;
 import game.cards.Card;
 import game.decks.*;
 import player.Player;
+import transmission.messages.Choice;
+import transmission.messages.Message;
+import transmission.network.Server;
 import utility.interactableCardThread;
 
 public class GameLogic {
@@ -81,16 +81,16 @@ public class GameLogic {
 <span class="nc" id="L81">                    response = currentPlayer.readMessage(false);</span>
 <span class="nc" id="L82">                    String[] args = response.split(&quot; &quot;);</span>
 
-<span class="nc bnc" id="L84" title="All 2 branches missed.">                    if (options.choicesContainedAnswer(args[0])</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">                            || (args.length == 3</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">                    if (options.choicesContainedAnswer(args[0])</span>
+                            || (args.length == 3
 <span class="nc bnc" id="L86" title="All 2 branches missed.">                                    &amp;&amp; (options.choicesContainedAnswer(args[0] + &quot; &quot; + args[1])))) {</span>
 
 <span class="nc bnc" id="L88" title="All 2 branches missed.">                        if (args[0].equals(&quot;Pass&quot;)) {</span>
-<span class="nc" id="L89">                            playPass();</span>
+<span class="nc" id="L89">                            nextPlayer = playPass();</span>
 <span class="nc" id="L90">                            response = &quot;&quot;;</span>
 <span class="nc bnc" id="L91" title="All 2 branches missed.">                        } else if (isCombo(args, currentPlayer)) {</span>
 <span class="nc" id="L92">                            nextPlayer = handleCombo(currentPlayer, args);</span>
-<span class="nc" id="L93">                        } else {</span>
+                        } else {
 <span class="nc" id="L94">                            nextPlayer = handleChoice(args, currentPlayer);</span>
                         }
 
@@ -103,7 +103,7 @@ public class GameLogic {
 <span class="nc" id="L103">                        presentNotValid(currentPlayer);</span>
 <span class="nc" id="L104">                        response = &quot;&quot;;</span>
                     }
-                }
+<span class="nc" id="L106">                }</span>
 <span class="nc bnc" id="L107" title="All 2 branches missed.">                if (currentPlayer.getExploded()) {</span>
 <span class="nc" id="L108">                    playersLeft--;</span>
 <span class="nc" id="L109">                    presentExploded(currentPlayer);</span>
@@ -113,78 +113,82 @@ public class GameLogic {
 <span class="nc bnc" id="L113" title="All 2 branches missed.">                if (currentPlayer.getNumberOfTurns() == 0) {</span>
 <span class="nc" id="L114">                    currentPlayer.setNumberOfTurns(1);</span>
                 }
-<span class="nc" id="L116">                checkWinner(currentPlayer, playersLeft);</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">                if (checkWinner(currentPlayer, playersLeft)) {</span>
+<span class="nc" id="L117">                    server.closeSocket();</span>
+<span class="nc" id="L118">                    System.exit(0);</span>
+                }
             } else {
                 // Bots not yet implemented
             }
+<span class="nc" id="L123">        }</span>
+
+<span class="nc" id="L125">    }</span>
+
+    private Player playPass() {
+<span class="nc" id="L128">        currentPlayer.setNumberOfTurns(currentPlayer.getNumberOfTurns() - 1);</span>
+<span class="nc" id="L129">        return drawCard(currentPlayer);</span>
+    }
+
+    public boolean checkWinner(Player currentPlayer, int playersLeft) {
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (playersLeft == 1) {</span>
+<span class="nc" id="L134">            setCurrentPlayer(nextPlayer);</span>
+<span class="nc" id="L135">            Player winner = currentPlayer;</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">            for (Player notify : allPlayers)</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                winner = (!notify.getExploded() ? notify : winner);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">            for (Player notify : allPlayers)</span>
+<span class="nc" id="L139">                notify.sendMessage(MessageFactory.createMessage(</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                        ((notify.getId() == winner.getId()) ? &quot;\nCongrats you&quot; : &quot;Player &quot; + winner.getId())</span>
+                                + &quot; have won the game\n\nClosing the game...&quot;,
+                        null, 0));
+
+<span class="nc" id="L144">            return true;</span>
         }
-
-<span class="nc" id="L122">    }</span>
-
-    private void playPass() {
-<span class="nc" id="L125">        nextPlayer = drawCard(currentPlayer);</span>
-<span class="nc" id="L126">        currentPlayer.setNumberOfTurns(currentPlayer.getNumberOfTurns() - 1);</span>
-<span class="nc" id="L127">    }</span>
-
-    private void checkWinner(Player currentPlayer, int playersLeft) {
-<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (playersLeft == 1) {</span>
-<span class="nc" id="L131">            setCurrentPlayer(nextPlayer);</span>
-<span class="nc" id="L132">            Player winner = currentPlayer;</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">            for (Player notify : allPlayers)</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">                winner = (!notify.getExploded() ? notify : winner);</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">            for (Player notify : allPlayers)</span>
-<span class="nc" id="L136">                notify.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">                        ((notify.getId() == winner.getId()) ? &quot;\nCongrats you&quot; : &quot;Player &quot; + winner.getId())</span>
-<span class="nc" id="L138">                                + &quot; have won the game\n\nClosing the game...&quot;,</span>
-<span class="nc" id="L139">                        null, 0));</span>
-<span class="nc" id="L140">            server.closeSocket();</span>
-<span class="nc" id="L141">            System.exit(0);</span>
-        }
-<span class="nc" id="L143">    }</span>
+<span class="nc" id="L146">        return false;</span>
+    }
 
     private void presentNotValid(Player currentPlayer) {
-<span class="nc" id="L146">        currentPlayer.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L147">                &quot;NotValid&quot;,</span>
-<span class="nc" id="L148">                null, 0));</span>
-<span class="nc" id="L149">    }</span>
+<span class="nc" id="L150">        currentPlayer.sendMessage(MessageFactory.createMessage(</span>
+                &quot;NotValid&quot;,
+                null, 0));
+<span class="nc" id="L153">    }</span>
 
     private void presentExploded(Player currentPlayer) {
-<span class="nc" id="L152">        Message exploded = MessageFactory.createMessage(</span>
-<span class="nc" id="L153">                &quot;Player &quot; + currentPlayer.getId()</span>
-<span class="nc" id="L154">                        + &quot; has exploded&quot;,</span>
-<span class="nc" id="L155">                null, 0);</span>
-<span class="nc" id="L156">        notifyAllPlayers(currentPlayer, exploded, exploded);</span>
-<span class="nc" id="L157">    }</span>
+<span class="nc" id="L156">        Message exploded = MessageFactory.createMessage(</span>
+<span class="nc" id="L157">                &quot;Player &quot; + currentPlayer.getId()</span>
+                        + &quot; has exploded&quot;,
+                null, 0);
+<span class="nc" id="L160">        notifyAllPlayers(currentPlayer, exploded, exploded);</span>
+<span class="nc" id="L161">    }</span>
 
     private void presentCorrectSyntax(Player currentPlayer, String response) {
-<span class="nc" id="L160">        currentPlayer</span>
-<span class="nc" id="L161">                .sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L162">                        &quot;Wrong syntax when you entered &quot; + response + &quot; the correct syntax is &quot;</span>
-<span class="nc" id="L163">                                + correctSyntax(response),</span>
-<span class="nc" id="L164">                        null, 0));</span>
-<span class="nc" id="L165">    }</span>
+<span class="nc" id="L164">        currentPlayer</span>
+<span class="nc" id="L165">                .sendMessage(MessageFactory.createMessage(</span>
+                        &quot;Wrong syntax when you entered &quot; + response + &quot; the correct syntax is &quot;
+<span class="nc" id="L167">                                + correctSyntax(response),</span>
+                        null, 0));
+<span class="nc" id="L169">    }</span>
 
     private void presentTargets(Player currentPlayer) {
-<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (currentPlayer.getHand().containsTargetingCard()) {</span>
-<span class="nc" id="L169">            currentPlayer.sendMessage(MessageFactory</span>
-<span class="nc" id="L170">                    .createMessage(&quot;\nYou can interact players with id's: &quot;,</span>
-<span class="nc" id="L171">                            getAllPlayerIds(allPlayers, currentPlayer), 0));</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (currentPlayer.getHand().containsTargetingCard()) {</span>
+<span class="nc" id="L173">            currentPlayer.sendMessage(MessageFactory</span>
+<span class="nc" id="L174">                    .createMessage(&quot;\nYou can interact players with id's: &quot;,</span>
+<span class="nc" id="L175">                            getAllPlayerIds(allPlayers, currentPlayer), 0));</span>
         }
-<span class="nc" id="L173">    }</span>
+<span class="nc" id="L177">    }</span>
 
     private void presentHand(Player currentPlayer) {
-<span class="nc" id="L176">        currentPlayer</span>
-<span class="nc" id="L177">                .sendMessage(MessageFactory</span>
-<span class="nc" id="L178">                        .createMessage(&quot;Hand&quot;,</span>
-<span class="nc" id="L179">                                currentPlayer.getHand().getCardNamesAsChoices(), 0));</span>
-<span class="nc" id="L180">    }</span>
+<span class="nc" id="L180">        currentPlayer</span>
+<span class="nc" id="L181">                .sendMessage(MessageFactory</span>
+<span class="nc" id="L182">                        .createMessage(&quot;Hand&quot;,</span>
+<span class="nc" id="L183">                                currentPlayer.getHand().getCardNamesAsChoices(), 0));</span>
+<span class="nc" id="L184">    }</span>
 
     private void presentTurns(Player currentPlayer) {
-<span class="nc" id="L183">        currentPlayer</span>
-<span class="nc" id="L184">                .sendMessage(MessageFactory.createMessage(&quot;\nYou have &quot; + currentPlayer.getNumberOfTurns()</span>
-<span class="nc bnc" id="L185" title="All 2 branches missed.">                        + ((currentPlayer.getNumberOfTurns() &gt; 1) ? &quot; turns&quot; : &quot; turn&quot;) + &quot; to take&quot;,</span>
-<span class="nc" id="L186">                        null, 0));</span>
-<span class="nc" id="L187">    }</span>
+<span class="nc" id="L187">        currentPlayer</span>
+<span class="nc" id="L188">                .sendMessage(MessageFactory.createMessage(&quot;\nYou have &quot; + currentPlayer.getNumberOfTurns()</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">                        + ((currentPlayer.getNumberOfTurns() &gt; 1) ? &quot; turns&quot; : &quot; turn&quot;) + &quot; to take&quot;,</span>
+                        null, 0));
+<span class="nc" id="L191">    }</span>
 
     /**
      * @param choice
@@ -194,31 +198,31 @@ public class GameLogic {
      * @throws ExecutionException
      */
     private Player handleChoice(String[] choice, Player currentPlayer) throws InterruptedException, ExecutionException {
-<span class="nc" id="L197">        Card cardPlayed = currentPlayer.getHand().returnSpecificCardByName(choice[0]);</span>
-<span class="nc" id="L198">        Player target = switchCurrentPlayer(currentPlayer);</span>
-<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (cardPlayed.isAbleToTarget()) {</span>
-<span class="nc" id="L200">            target = findTarget(choice, currentPlayer);</span>
-<span class="nc bnc" id="L201" title="All 2 branches missed.">            if (target == null) {</span>
-<span class="nc" id="L202">                return null;</span>
+<span class="nc" id="L201">        Card cardPlayed = currentPlayer.getHand().returnSpecificCardByName(choice[0]);</span>
+<span class="nc" id="L202">        Player target = switchCurrentPlayer(currentPlayer);</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        if (cardPlayed.isAbleToTarget()) {</span>
+<span class="nc" id="L204">            target = findTarget(choice, currentPlayer);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">            if (target == null) {</span>
+<span class="nc" id="L206">                return null;</span>
             }
-<span class="nc bnc" id="L204" title="All 4 branches missed.">        } else if (!cardPlayed.isAbleToTarget() &amp;&amp; choice.length &gt;= 2) {</span>
-<span class="nc" id="L205">            return null;</span>
+<span class="nc bnc" id="L208" title="All 4 branches missed.">        } else if (!cardPlayed.isAbleToTarget() &amp;&amp; choice.length &gt;= 2) {</span>
+<span class="nc" id="L209">            return null;</span>
         }
-<span class="nc" id="L207">        discardPile.add(cardPlayed, 0);</span>
-<span class="nc" id="L208">        currentPlayer.getHand().remove(cardPlayed);</span>
-<span class="nc" id="L209">        interactCardPlayed(currentPlayer, cardPlayed);</span>
-<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (discardPile.getNrNope() % 2 == 0) {</span>
-<span class="nc" id="L211">            notifyAllPlayers(currentPlayer,</span>
-<span class="nc" id="L212">                    MessageFactory.createMessage(</span>
-<span class="nc" id="L213">                            &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played a &quot; + cardPlayed.getName() + &quot; card! \n&quot;,</span>
-<span class="nc" id="L214">                            null, 0),</span>
-<span class="nc" id="L215">                    null);</span>
-<span class="nc" id="L216">            return cardPlayed.action(discardPile, drawPile, currentPlayer, target);</span>
+<span class="nc" id="L211">        discardPile.add(cardPlayed, 0);</span>
+<span class="nc" id="L212">        currentPlayer.getHand().remove(cardPlayed);</span>
+<span class="nc" id="L213">        interactCardPlayed(currentPlayer, cardPlayed);</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">        if (discardPile.getNrNope() % 2 == 0) {</span>
+<span class="nc" id="L215">            notifyAllPlayers(currentPlayer,</span>
+<span class="nc" id="L216">                    MessageFactory.createMessage(</span>
+<span class="nc" id="L217">                            &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played a &quot; + cardPlayed.getName() + &quot; card! \n&quot;,</span>
+                            null, 0),
+                    null);
+<span class="nc" id="L220">            return cardPlayed.action(discardPile, drawPile, currentPlayer, target);</span>
         }
-<span class="nc" id="L218">        Message turnGoesBack = MessageFactory</span>
-<span class="nc" id="L219">                .createMessage(&quot;Turn goes back to player &quot; + currentPlayer.getId(), null, 0);</span>
-<span class="nc" id="L220">        notifyAllPlayers(currentPlayer, turnGoesBack, turnGoesBack);</span>
-<span class="nc" id="L221">        return currentPlayer;</span>
+<span class="nc" id="L222">        Message turnGoesBack = MessageFactory</span>
+<span class="nc" id="L223">                .createMessage(&quot;Turn goes back to player &quot; + currentPlayer.getId(), null, 0);</span>
+<span class="nc" id="L224">        notifyAllPlayers(currentPlayer, turnGoesBack, turnGoesBack);</span>
+<span class="nc" id="L225">        return currentPlayer;</span>
     }
 
     /**
@@ -231,143 +235,143 @@ public class GameLogic {
      */
     private Player handleCombo(Player currentPlayer, String combo[])
             throws NumberFormatException, InterruptedException, ExecutionException {
-<span class="nc" id="L234">        Card comboCard = currentPlayer.getHand().returnSpecificCardByName(combo[0]);</span>
-<span class="nc" id="L235">        int comboValue = Integer.valueOf(combo[1]);</span>
+<span class="nc" id="L238">        Card comboCard = currentPlayer.getHand().returnSpecificCardByName(combo[0]);</span>
+<span class="nc" id="L239">        int comboValue = Integer.valueOf(combo[1]);</span>
         String response;
         Card responseCard;
         Message question;
-<span class="nc" id="L239">        Player target = null;</span>
+<span class="nc" id="L243">        Player target = null;</span>
         int nopesPlayed;
 
-<span class="nc" id="L242">        target = findTarget(combo, currentPlayer);</span>
-<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (target == null) {</span>
-<span class="nc" id="L244">            return null;</span>
+<span class="nc" id="L246">        target = findTarget(combo, currentPlayer);</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (target == null) {</span>
+<span class="nc" id="L248">            return null;</span>
         }
 
-<span class="nc bnc" id="L247" title="All 2 branches missed.">        for (int i = 0; i &lt; comboValue; i++) {</span>
-<span class="nc" id="L248">            Card cardToRemove = currentPlayer.getHand().returnSpecificCardByName(combo[0]);</span>
-<span class="nc" id="L249">            discardPile.add(cardToRemove, 0);</span>
-<span class="nc" id="L250">            currentPlayer.getHand().remove(cardToRemove);</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">        for (int i = 0; i &lt; comboValue; i++) {</span>
+<span class="nc" id="L252">            Card cardToRemove = currentPlayer.getHand().returnSpecificCardByName(combo[0]);</span>
+<span class="nc" id="L253">            discardPile.add(cardToRemove, 0);</span>
+<span class="nc" id="L254">            currentPlayer.getHand().remove(cardToRemove);</span>
         }
-<span class="nc" id="L252">        interactCardPlayed(currentPlayer, comboCard);</span>
+<span class="nc" id="L256">        interactCardPlayed(currentPlayer, comboCard);</span>
 
-<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (comboCard.getName().equals(&quot;Nope&quot;)) {</span>
-<span class="nc" id="L255">            nopesPlayed = discardPile.getNrNope() - comboValue;</span>
-<span class="nc" id="L256">        } else {</span>
-<span class="nc" id="L257">            nopesPlayed = discardPile.getNrNope();</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        if (comboCard.getName().equals(&quot;Nope&quot;)) {</span>
+<span class="nc" id="L259">            nopesPlayed = discardPile.getNrNope() - comboValue;</span>
+        } else {
+<span class="nc" id="L261">            nopesPlayed = discardPile.getNrNope();</span>
         }
 
-<span class="nc bnc" id="L260" title="All 2 branches missed.">        if (nopesPlayed % 2 == 0) {</span>
-<span class="nc bnc" id="L261" title="All 3 branches missed.">            switch (comboValue) {</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (nopesPlayed % 2 == 0) {</span>
+<span class="nc bnc" id="L265" title="All 3 branches missed.">            switch (comboValue) {</span>
                 case 3:
-<span class="nc" id="L263">                    boolean option = false;</span>
+<span class="nc" id="L267">                    boolean option = false;</span>
 
-<span class="nc" id="L265">                    question = MessageFactory</span>
-<span class="nc" id="L266">                            .createMessage(&quot;What card do you want to take from player &quot; + target.getId()</span>
-<span class="nc" id="L267">                                    + &quot; your choices are\n &quot;, allCardNames, 1);</span>
-<span class="nc bnc" id="L268" title="All 2 branches missed.">                    while (!option) {</span>
-<span class="nc" id="L269">                        currentPlayer.sendMessage(question);</span>
-<span class="nc" id="L270">                        response = currentPlayer.readMessage(false);</span>
-<span class="nc" id="L271">                        responseCard = target.getHand().returnSpecificCardByName(response);</span>
-<span class="nc bnc" id="L272" title="All 2 branches missed.">                        if (question.choicesContainedAnswer(response)) {</span>
-<span class="nc" id="L273">                            option = true;</span>
+<span class="nc" id="L269">                    question = MessageFactory</span>
+<span class="nc" id="L270">                            .createMessage(&quot;What card do you want to take from player &quot; + target.getId()</span>
+                                    + &quot; your choices are\n &quot;, allCardNames, 1);
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                    while (!option) {</span>
+<span class="nc" id="L273">                        currentPlayer.sendMessage(question);</span>
+<span class="nc" id="L274">                        response = currentPlayer.readMessage(false);</span>
+<span class="nc" id="L275">                        responseCard = target.getHand().returnSpecificCardByName(response);</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                        if (question.choicesContainedAnswer(response)) {</span>
+<span class="nc" id="L277">                            option = true;</span>
                         }
-<span class="nc bnc" id="L275" title="All 2 branches missed.">                        if (option) {</span>
-<span class="nc bnc" id="L276" title="All 2 branches missed.">                            if (target.getHand().containsCardWithName(response)) {</span>
-<span class="nc" id="L277">                                currentPlayer.getHand().add(responseCard, comboValue);</span>
-<span class="nc" id="L278">                                target.getHand().remove(responseCard);</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">                        if (option) {</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">                            if (target.getHand().containsCardWithName(response)) {</span>
+<span class="nc" id="L281">                                currentPlayer.getHand().add(responseCard, comboValue);</span>
+<span class="nc" id="L282">                                target.getHand().remove(responseCard);</span>
 
-<span class="nc" id="L280">                                target.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L281">                                        &quot;Player &quot; + currentPlayer.getId() + &quot; took a &quot;</span>
-<span class="nc" id="L282">                                                + responseCard.getName()</span>
-<span class="nc" id="L283">                                                + &quot; card from you&quot;,</span>
-<span class="nc" id="L284">                                        null, 0));</span>
-<span class="nc" id="L285">                                notifyAllPlayers(currentPlayer, MessageFactory.createMessage(</span>
-<span class="nc" id="L286">                                        &quot;Player &quot; + target.getId() + &quot; had a &quot; + responseCard.getName()</span>
-<span class="nc" id="L287">                                                + &quot; card in thier hand&quot;,</span>
-<span class="nc" id="L288">                                        null,</span>
-<span class="nc" id="L289">                                        0),</span>
-<span class="nc" id="L290">                                        MessageFactory.createMessage(</span>
-<span class="nc" id="L291">                                                &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played three &quot;</span>
-<span class="nc" id="L292">                                                        + comboCard.getName()</span>
-<span class="nc" id="L293">                                                        + &quot; cards as three of a kind and tried to steal a &quot; + response</span>
-<span class="nc" id="L294">                                                        + &quot; card from player &quot; + target.getId()</span>
-<span class="nc" id="L295">                                                        + &quot; and they got one!\n&quot;,</span>
-<span class="nc" id="L296">                                                null, 0));</span>
-<span class="nc" id="L297">                            } else {</span>
-<span class="nc" id="L298">                                notifyAllPlayers(currentPlayer, MessageFactory.createMessage(&quot;Player &quot; + target.getId()</span>
-<span class="nc" id="L299">                                        + &quot; did not have a &quot; + response</span>
-<span class="nc" id="L300">                                        + &quot; card in thier hand&quot;,</span>
-<span class="nc" id="L301">                                        null,</span>
-<span class="nc" id="L302">                                        0),</span>
-<span class="nc" id="L303">                                        MessageFactory.createMessage(</span>
-<span class="nc" id="L304">                                                &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played three &quot;</span>
-<span class="nc" id="L305">                                                        + comboCard.getName()</span>
-<span class="nc" id="L306">                                                        + &quot; cards as three of a kind and tried to steal a &quot; + response</span>
-<span class="nc" id="L307">                                                        + &quot; card from player &quot; + target.getId()</span>
-<span class="nc" id="L308">                                                        + &quot; but they did not have it\n&quot;,</span>
-<span class="nc" id="L309">                                                null, 0));</span>
+<span class="nc" id="L284">                                target.sendMessage(MessageFactory.createMessage(</span>
+<span class="nc" id="L285">                                        &quot;Player &quot; + currentPlayer.getId() + &quot; took a &quot;</span>
+<span class="nc" id="L286">                                                + responseCard.getName()</span>
+                                                + &quot; card from you&quot;,
+                                        null, 0));
+<span class="nc" id="L289">                                notifyAllPlayers(currentPlayer, MessageFactory.createMessage(</span>
+<span class="nc" id="L290">                                        &quot;Player &quot; + target.getId() + &quot; had a &quot; + responseCard.getName()</span>
+                                                + &quot; card in thier hand&quot;,
+                                        null,
+                                        0),
+<span class="nc" id="L294">                                        MessageFactory.createMessage(</span>
+<span class="nc" id="L295">                                                &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played three &quot;</span>
+<span class="nc" id="L296">                                                        + comboCard.getName()</span>
+                                                        + &quot; cards as three of a kind and tried to steal a &quot; + response
+<span class="nc" id="L298">                                                        + &quot; card from player &quot; + target.getId()</span>
+                                                        + &quot; and they got one!\n&quot;,
+                                                null, 0));
+                            } else {
+<span class="nc" id="L302">                                notifyAllPlayers(currentPlayer, MessageFactory.createMessage(&quot;Player &quot; + target.getId()</span>
+                                        + &quot; did not have a &quot; + response
+                                        + &quot; card in thier hand&quot;,
+                                        null,
+                                        0),
+<span class="nc" id="L307">                                        MessageFactory.createMessage(</span>
+<span class="nc" id="L308">                                                &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played three &quot;</span>
+<span class="nc" id="L309">                                                        + comboCard.getName()</span>
+                                                        + &quot; cards as three of a kind and tried to steal a &quot; + response
+<span class="nc" id="L311">                                                        + &quot; card from player &quot; + target.getId()</span>
+                                                        + &quot; but they did not have it\n&quot;,
+                                                null, 0));
                             }
-<span class="nc" id="L311">                        } else {</span>
-<span class="nc" id="L312">                            presentNotValid(currentPlayer);</span>
+                        } else {
+<span class="nc" id="L316">                            presentNotValid(currentPlayer);</span>
                         }
                     }
 
-<span class="nc" id="L316">                    return currentPlayer;</span>
+<span class="nc" id="L320">                    return currentPlayer;</span>
                 case 2:
-<span class="nc" id="L318">                    question = MessageFactory.createMessage(</span>
-<span class="nc" id="L319">                            &quot;Where in the hand of player &quot; + target.getId()</span>
-<span class="nc" id="L320">                                    + &quot; do you want to take a card from:\n&quot;,</span>
-<span class="nc" id="L321">                            new ArrayList&lt;Choice&gt;(Arrays.asList(new Choice(&quot;0&quot;, &quot;first positon in the hand&quot;),</span>
-<span class="nc" id="L322">                                    new Choice(String.valueOf(Integer.valueOf(target.getHand().getCurrentSize())),</span>
-<span class="nc" id="L323">                                            &quot;last position in the hand&quot;))),</span>
-<span class="nc" id="L324">                            1);</span>
+<span class="nc" id="L322">                    question = MessageFactory.createMessage(</span>
+<span class="nc" id="L323">                            &quot;Where in the hand of player &quot; + target.getId()</span>
+                                    + &quot; do you want to take a card from:\n&quot;,
+<span class="nc" id="L325">                            new ArrayList&lt;Choice&gt;(Arrays.asList(new Choice(&quot;0&quot;, &quot;first positon in the hand&quot;),</span>
+<span class="nc" id="L326">                                    new Choice(String.valueOf(Integer.valueOf(target.getHand().getCurrentSize())),</span>
+                                            &quot;last position in the hand&quot;))),
+                            1);
 
-<span class="nc" id="L326">                    currentPlayer.sendMessage(question);</span>
-<span class="nc" id="L327">                    boolean validOption = false;</span>
-<span class="nc bnc" id="L328" title="All 2 branches missed.">                    while (!validOption) {</span>
+<span class="nc" id="L330">                    currentPlayer.sendMessage(question);</span>
+<span class="nc" id="L331">                    boolean validOption = false;</span>
+<span class="nc bnc" id="L332" title="All 2 branches missed.">                    while (!validOption) {</span>
                         try {
-<span class="nc" id="L330">                            int positionInDeck = Integer.valueOf(currentPlayer.readMessage(false)).intValue();</span>
-<span class="nc bnc" id="L331" title="All 2 branches missed.">                            if (positionInDeck &gt;= Integer.valueOf(question.getChoices().get(0).getChoice())</span>
-<span class="nc" id="L332">                                    &amp;&amp; positionInDeck &lt;= Integer</span>
-<span class="nc bnc" id="L333" title="All 2 branches missed.">                                            .valueOf(question.getChoices().get(1).getChoice())) {</span>
-<span class="nc" id="L334">                                responseCard = target.getHand().getCards().get(positionInDeck);</span>
-<span class="nc" id="L335">                                currentPlayer.getHand().add(responseCard, 0);</span>
-<span class="nc" id="L336">                                target.getHand().remove(responseCard);</span>
-<span class="nc" id="L337">                                currentPlayer.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L338">                                        &quot;You got a &quot; + responseCard.getName()</span>
-<span class="nc" id="L339">                                                + &quot; card&quot;,</span>
-<span class="nc" id="L340">                                        null, 0));</span>
-<span class="nc" id="L341">                                target.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L342">                                        &quot;Player &quot; + currentPlayer.getId() + &quot; took a &quot;</span>
-<span class="nc" id="L343">                                                + responseCard.getName()</span>
-<span class="nc" id="L344">                                                + &quot; card from you&quot;,</span>
-<span class="nc" id="L345">                                        null, 0));</span>
-<span class="nc" id="L346">                                validOption = true;</span>
-<span class="nc" id="L347">                            } else {</span>
-<span class="nc" id="L348">                                presentNotValid(currentPlayer);</span>
+<span class="nc" id="L334">                            int positionInDeck = Integer.valueOf(currentPlayer.readMessage(false)).intValue();</span>
+<span class="nc bnc" id="L335" title="All 2 branches missed.">                            if (positionInDeck &gt;= Integer.valueOf(question.getChoices().get(0).getChoice())</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">                                    &amp;&amp; positionInDeck &lt;= Integer</span>
+<span class="nc" id="L337">                                            .valueOf(question.getChoices().get(1).getChoice())) {</span>
+<span class="nc" id="L338">                                responseCard = target.getHand().getCards().get(positionInDeck);</span>
+<span class="nc" id="L339">                                currentPlayer.getHand().add(responseCard, 0);</span>
+<span class="nc" id="L340">                                target.getHand().remove(responseCard);</span>
+<span class="nc" id="L341">                                currentPlayer.sendMessage(MessageFactory.createMessage(</span>
+<span class="nc" id="L342">                                        &quot;You got a &quot; + responseCard.getName()</span>
+                                                + &quot; card&quot;,
+                                        null, 0));
+<span class="nc" id="L345">                                target.sendMessage(MessageFactory.createMessage(</span>
+<span class="nc" id="L346">                                        &quot;Player &quot; + currentPlayer.getId() + &quot; took a &quot;</span>
+<span class="nc" id="L347">                                                + responseCard.getName()</span>
+                                                + &quot; card from you&quot;,
+                                        null, 0));
+<span class="nc" id="L350">                                validOption = true;</span>
+                            } else {
+<span class="nc" id="L352">                                presentNotValid(currentPlayer);</span>
                             }
 
-<span class="nc" id="L351">                        } catch (final NumberFormatException e) {</span>
-<span class="nc" id="L352">                            currentPlayer.sendMessage(</span>
-<span class="nc" id="L353">                                    MessageFactory.createMessage(</span>
-<span class="nc" id="L354">                                            &quot;You did not enter a valid position, try again!&quot;, null, 0));</span>
-                        }
+<span class="nc" id="L355">                        } catch (final NumberFormatException e) {</span>
+<span class="nc" id="L356">                            currentPlayer.sendMessage(</span>
+<span class="nc" id="L357">                                    MessageFactory.createMessage(</span>
+                                            &quot;You did not enter a valid position, try again!&quot;, null, 0));
+<span class="nc" id="L359">                        }</span>
                     }
-<span class="nc" id="L357">                    notifyAllPlayers(currentPlayer,</span>
-<span class="nc" id="L358">                            MessageFactory.createMessage(</span>
-<span class="nc" id="L359">                                    &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played a pair of &quot;</span>
-<span class="nc" id="L360">                                            + comboCard.getName()</span>
-<span class="nc" id="L361">                                            + &quot; cards and stolen a card from player &quot; + target.getId() + &quot;\n&quot;,</span>
-<span class="nc" id="L362">                                    null, 0),</span>
-<span class="nc" id="L363">                            null);</span>
-<span class="nc" id="L364">                    return currentPlayer;</span>
+<span class="nc" id="L361">                    notifyAllPlayers(currentPlayer,</span>
+<span class="nc" id="L362">                            MessageFactory.createMessage(</span>
+<span class="nc" id="L363">                                    &quot;\nPlayer &quot; + currentPlayer.getId() + &quot; has played a pair of &quot;</span>
+<span class="nc" id="L364">                                            + comboCard.getName()</span>
+<span class="nc" id="L365">                                            + &quot; cards and stolen a card from player &quot; + target.getId() + &quot;\n&quot;,</span>
+                                    null, 0),
+                            null);
+<span class="nc" id="L368">                    return currentPlayer;</span>
             }
         }
-<span class="nc" id="L367">        Message turnGoesBack = MessageFactory</span>
-<span class="nc" id="L368">                .createMessage(&quot;Turn goes back to player &quot; + currentPlayer.getId(), null, 0);</span>
-<span class="nc" id="L369">        notifyAllPlayers(currentPlayer, turnGoesBack, turnGoesBack);</span>
-<span class="nc" id="L370">        return currentPlayer;</span>
+<span class="nc" id="L371">        Message turnGoesBack = MessageFactory</span>
+<span class="nc" id="L372">                .createMessage(&quot;Turn goes back to player &quot; + currentPlayer.getId(), null, 0);</span>
+<span class="nc" id="L373">        notifyAllPlayers(currentPlayer, turnGoesBack, turnGoesBack);</span>
+<span class="nc" id="L374">        return currentPlayer;</span>
     }
 
     /**
@@ -376,10 +380,10 @@ public class GameLogic {
      * @return
      */
     private boolean isCombo(String[] args, Player currentPlayer) {
-<span class="nc bnc" id="L379" title="All 4 branches missed.">        if (args.length == 3 &amp;&amp; currentPlayer.getHand().occurenceOf(args[0]) &gt;= 2) {</span>
-<span class="nc" id="L380">            return true;</span>
+<span class="nc bnc" id="L383" title="All 4 branches missed.">        if (args.length == 3 &amp;&amp; currentPlayer.getHand().occurenceOf(args[0]) &gt;= 2) {</span>
+<span class="nc" id="L384">            return true;</span>
         }
-<span class="nc" id="L382">        return false;</span>
+<span class="nc" id="L386">        return false;</span>
     }
 
     /**
@@ -387,12 +391,12 @@ public class GameLogic {
      * @return
      */
     private Player switchCurrentPlayer(Player currentPlayer) {
-<span class="nc bnc" id="L390" title="All 2 branches missed.">        int nextID = ((currentPlayer.getId() + 1) &lt; allPlayers.size() ? (currentPlayer.getId()) + 1 : 0);</span>
-<span class="nc" id="L391">        Player newCurrentPlayer = allPlayers.get(nextID);</span>
-<span class="nc bnc" id="L392" title="All 2 branches missed.">        if (newCurrentPlayer.getExploded()) {</span>
-<span class="nc" id="L393">            return switchCurrentPlayer(newCurrentPlayer);</span>
+<span class="nc bnc" id="L394" title="All 2 branches missed.">        int nextID = ((currentPlayer.getId() + 1) &lt; allPlayers.size() ? (currentPlayer.getId()) + 1 : 0);</span>
+<span class="nc" id="L395">        Player newCurrentPlayer = allPlayers.get(nextID);</span>
+<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (newCurrentPlayer.getExploded()) {</span>
+<span class="nc" id="L397">            return switchCurrentPlayer(newCurrentPlayer);</span>
         }
-<span class="nc" id="L395">        return newCurrentPlayer;</span>
+<span class="nc" id="L399">        return newCurrentPlayer;</span>
     }
 
     /**
@@ -401,12 +405,12 @@ public class GameLogic {
      * @return Return a ArrayList&lt;Choice&gt; containing all player ids
      */
     private ArrayList&lt;Choice&gt; getAllPlayerIds(ArrayList&lt;Player&gt; players, Player currentPlayer) {
-<span class="nc" id="L404">        ArrayList&lt;Choice&gt; ids = new ArrayList&lt;Choice&gt;();</span>
-<span class="nc bnc" id="L405" title="All 2 branches missed.">        for (Player player : players) {</span>
-<span class="nc bnc" id="L406" title="All 4 branches missed.">            if (player.getId() != currentPlayer.getId() &amp;&amp; !player.getExploded())</span>
-<span class="nc" id="L407">                ids.add(new Choice(String.valueOf(player.getId()), &quot;&quot;));</span>
-        }
-<span class="nc" id="L409">        return ids;</span>
+<span class="nc" id="L408">        ArrayList&lt;Choice&gt; ids = new ArrayList&lt;Choice&gt;();</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">        for (Player player : players) {</span>
+<span class="nc bnc" id="L410" title="All 4 branches missed.">            if (player.getId() != currentPlayer.getId() &amp;&amp; !player.getExploded())</span>
+<span class="nc" id="L411">                ids.add(new Choice(String.valueOf(player.getId()), &quot;&quot;));</span>
+<span class="nc" id="L412">        }</span>
+<span class="nc" id="L413">        return ids;</span>
     }
 
     /**
@@ -416,24 +420,24 @@ public class GameLogic {
      *         ExplodingKitten card
      */
     private Player drawCard(Player currentPlayer) {
-<span class="nc bnc" id="L419" title="All 2 branches missed.">        if (drawPile.getCards().size() == 0) {</span>
-<span class="nc" id="L420">            currentPlayer.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L421">                    &quot;Empty&quot;,</span>
-<span class="nc" id="L422">                    null, 0));</span>
-<span class="nc" id="L423">            return switchCurrentPlayer(currentPlayer);</span>
+<span class="nc bnc" id="L423" title="All 2 branches missed.">        if (drawPile.getCards().size() == 0) {</span>
+<span class="nc" id="L424">            currentPlayer.sendMessage(MessageFactory.createMessage(</span>
+                    &quot;Empty&quot;,
+                    null, 0));
+<span class="nc" id="L427">            return switchCurrentPlayer(currentPlayer);</span>
         }
-<span class="nc" id="L425">        Card cardPlayerDrew = drawPile.getCards().get(0);</span>
-<span class="nc bnc" id="L426" title="All 2 branches missed.">        if (!cardPlayerDrew.getName().equals(&quot;ExplodingKitten&quot;)) {</span>
-<span class="nc" id="L427">            currentPlayer.getHand().getCards().add(cardPlayerDrew);</span>
-<span class="nc" id="L428">            drawPile.getCards().remove(cardPlayerDrew);</span>
-<span class="nc" id="L429">            currentPlayer.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L430">                    &quot;\nYou drew a &quot; + cardPlayerDrew.getName()</span>
-<span class="nc" id="L431">                            + &quot; card\n&quot;,</span>
-<span class="nc" id="L432">                    null, 0));</span>
-<span class="nc" id="L433">            return switchCurrentPlayer(currentPlayer);</span>
+<span class="nc" id="L429">        Card cardPlayerDrew = drawPile.getCards().get(0);</span>
+<span class="nc bnc" id="L430" title="All 2 branches missed.">        if (!cardPlayerDrew.getName().equals(&quot;ExplodingKitten&quot;)) {</span>
+<span class="nc" id="L431">            currentPlayer.getHand().getCards().add(cardPlayerDrew);</span>
+<span class="nc" id="L432">            drawPile.getCards().remove(cardPlayerDrew);</span>
+<span class="nc" id="L433">            currentPlayer.sendMessage(MessageFactory.createMessage(</span>
+<span class="nc" id="L434">                    &quot;\nYou drew a &quot; + cardPlayerDrew.getName()</span>
+                            + &quot; card\n&quot;,
+                    null, 0));
+<span class="nc" id="L437">            return switchCurrentPlayer(currentPlayer);</span>
         }
-<span class="nc" id="L435">        return drawPile.getCards().get(0).action(discardPile, drawPile, currentPlayer,</span>
-<span class="nc" id="L436">                switchCurrentPlayer(currentPlayer));</span>
+<span class="nc" id="L439">        return drawPile.getCards().get(0).action(discardPile, drawPile, currentPlayer,</span>
+<span class="nc" id="L440">                switchCurrentPlayer(currentPlayer));</span>
     }
 
     /**
@@ -441,19 +445,19 @@ public class GameLogic {
      * @return
      */
     private Player findTarget(final String[] id, Player currentPlayer) {
-<span class="nc bnc" id="L444" title="All 4 branches missed.">        if (id.length == 2 &amp;&amp; currentPlayer.getId() != Integer.valueOf(id[1])</span>
-<span class="nc bnc" id="L445" title="All 4 branches missed.">                || id.length == 3 &amp;&amp; currentPlayer.getId() != Integer.valueOf(id[2])) {</span>
-<span class="nc bnc" id="L446" title="All 2 branches missed.">            for (Player target : allPlayers) {</span>
+<span class="nc bnc" id="L448" title="All 6 branches missed.">        if (id.length == 2 &amp;&amp; currentPlayer.getId() != Integer.valueOf(id[1])</span>
+<span class="nc bnc" id="L449" title="All 2 branches missed.">                || id.length == 3 &amp;&amp; currentPlayer.getId() != Integer.valueOf(id[2])) {</span>
+<span class="nc bnc" id="L450" title="All 2 branches missed.">            for (Player target : allPlayers) {</span>
 
-<span class="nc bnc" id="L448" title="All 6 branches missed.">                if (id.length == 2 &amp;&amp; target.getId() == Integer.valueOf(id[1]) &amp;&amp; !target.getExploded()) {</span>
-<span class="nc" id="L449">                    return target;</span>
+<span class="nc bnc" id="L452" title="All 6 branches missed.">                if (id.length == 2 &amp;&amp; target.getId() == Integer.valueOf(id[1]) &amp;&amp; !target.getExploded()) {</span>
+<span class="nc" id="L453">                    return target;</span>
                 }
-<span class="nc bnc" id="L451" title="All 6 branches missed.">                if (id.length == 3 &amp;&amp; target.getId() == Integer.valueOf(id[2]) &amp;&amp; !target.getExploded()) {</span>
-<span class="nc" id="L452">                    return target;</span>
+<span class="nc bnc" id="L455" title="All 6 branches missed.">                if (id.length == 3 &amp;&amp; target.getId() == Integer.valueOf(id[2]) &amp;&amp; !target.getExploded()) {</span>
+<span class="nc" id="L456">                    return target;</span>
                 }
-            }
+<span class="nc" id="L458">            }</span>
         }
-<span class="nc" id="L456">        return null;</span>
+<span class="nc" id="L460">        return null;</span>
 
     }
 
@@ -462,29 +466,29 @@ public class GameLogic {
      * @return
      */
     private String correctSyntax(String response) {
-<span class="nc bnc" id="L465" title="All 8 branches missed.">        switch (response) {</span>
+<span class="nc bnc" id="L469" title="All 8 branches missed.">        switch (response) {</span>
 
             // Cards with targets
             case &quot;Favor&quot;:
-<span class="nc" id="L469">                return &quot;Example: Favor 1 -&gt; Favor [player id]&quot;;</span>
+<span class="nc" id="L473">                return &quot;Example: Favor 1 -&gt; Favor [player id]&quot;;</span>
 
             // All CatCards
             case &quot;HairyPotatoCat&quot;:
-<span class="nc" id="L473">                return &quot;Example: HairyPotatoCat 2 1 -&gt; HairyPotatoCat [combo value] [player id]&quot;;</span>
+<span class="nc" id="L477">                return &quot;Example: HairyPotatoCat 2 1 -&gt; HairyPotatoCat [combo value] [player id]&quot;;</span>
             case &quot;Cattermelon&quot;:
-<span class="nc" id="L475">                return &quot;Example: Cattermelon 2 1 -&gt; Cattermelon [combo value] [player id]&quot;;</span>
+<span class="nc" id="L479">                return &quot;Example: Cattermelon 2 1 -&gt; Cattermelon [combo value] [player id]&quot;;</span>
             case &quot;RainbowRalphingCat&quot;:
-<span class="nc" id="L477">                return &quot;Example: RainbowRalphingCat 2 1 -&gt; RainbowRalphingCat [combo value] [player id]&quot;;</span>
+<span class="nc" id="L481">                return &quot;Example: RainbowRalphingCat 2 1 -&gt; RainbowRalphingCat [combo value] [player id]&quot;;</span>
             case &quot;TacoCat&quot;:
-<span class="nc" id="L479">                return &quot;Example: TacoCat 2 1 -&gt; TacoCat [combo value] [player id]&quot;;</span>
+<span class="nc" id="L483">                return &quot;Example: TacoCat 2 1 -&gt; TacoCat [combo value] [player id]&quot;;</span>
             case &quot;OverweightBikiniCat&quot;:
-<span class="nc" id="L481">                return &quot;Example: OverweightBikiniCat 2 1 -&gt; OverweightBikiniCat [combo value] [player id]&quot;;</span>
+<span class="nc" id="L485">                return &quot;Example: OverweightBikiniCat 2 1 -&gt; OverweightBikiniCat [combo value] [player id]&quot;;</span>
 
             // Others
             case &quot;Attack&quot;:
-<span class="nc" id="L485">                return &quot;Example: Attack -&gt; Attacks next player&quot;;</span>
+<span class="nc" id="L489">                return &quot;Example: Attack -&gt; Attacks next player&quot;;</span>
         }
-<span class="nc" id="L487">        return &quot;no default syntax avalible&quot;;</span>
+<span class="nc" id="L491">        return &quot;no default syntax avalible&quot;;</span>
     }
 
     /**
@@ -493,20 +497,20 @@ public class GameLogic {
      * @param otherPlayerMessage
      */
     private void notifyAllPlayers(Player currentPlayer, Message currentPlayerMessage, Message otherPlayerMessage) {
-<span class="nc bnc" id="L496" title="All 2 branches missed.">        for (Player p : allPlayers) {</span>
-<span class="nc bnc" id="L497" title="All 2 branches missed.">            if (!p.isBot()) {</span>
-<span class="nc bnc" id="L498" title="All 2 branches missed.">                if (otherPlayerMessage == null) {</span>
-<span class="nc" id="L499">                    p.sendMessage(currentPlayerMessage);</span>
-<span class="nc" id="L500">                } else {</span>
-<span class="nc bnc" id="L501" title="All 4 branches missed.">                    if (p == currentPlayer &amp;&amp; currentPlayerMessage != null)</span>
-<span class="nc" id="L502">                        p.sendMessage(currentPlayerMessage);</span>
+<span class="nc bnc" id="L500" title="All 2 branches missed.">        for (Player p : allPlayers) {</span>
+<span class="nc bnc" id="L501" title="All 2 branches missed.">            if (!p.isBot()) {</span>
+<span class="nc bnc" id="L502" title="All 2 branches missed.">                if (otherPlayerMessage == null) {</span>
+<span class="nc" id="L503">                    p.sendMessage(currentPlayerMessage);</span>
+                } else {
+<span class="nc bnc" id="L505" title="All 4 branches missed.">                    if (p == currentPlayer &amp;&amp; currentPlayerMessage != null)</span>
+<span class="nc" id="L506">                        p.sendMessage(currentPlayerMessage);</span>
                     else
-<span class="nc" id="L504">                        p.sendMessage(otherPlayerMessage);</span>
+<span class="nc" id="L508">                        p.sendMessage(otherPlayerMessage);</span>
                 }
             }
 
-        }
-<span class="nc" id="L509">    }</span>
+<span class="nc" id="L512">        }</span>
+<span class="nc" id="L513">    }</span>
 
     /**
      * @param currentPlayer
@@ -516,43 +520,43 @@ public class GameLogic {
      */
     private void interactCardPlayed(Player currentPlayer, Card cardPlayed)
             throws InterruptedException, ExecutionException {
-<span class="nc bnc" id="L519" title="All 2 branches missed.">        if (!currentPlayer.isBot()) {</span>
-<span class="nc" id="L520">            ExecutorService threadpool = Executors.newFixedThreadPool(allPlayers.size() - 1);</span>
-<span class="nc" id="L521">            CompletionService&lt;Player&gt; completionService = new ExecutorCompletionService&lt;Player&gt;(threadpool);</span>
-<span class="nc" id="L522">            boolean nopeExists = false;</span>
-<span class="nc" id="L523">            int nopePlayed = discardPile.getNrNope();</span>
+<span class="nc bnc" id="L523" title="All 2 branches missed.">        if (!currentPlayer.isBot()) {</span>
+<span class="nc" id="L524">            ExecutorService threadpool = Executors.newFixedThreadPool(allPlayers.size() - 1);</span>
+<span class="nc" id="L525">            CompletionService&lt;Player&gt; completionService = new ExecutorCompletionService&lt;Player&gt;(threadpool);</span>
+<span class="nc" id="L526">            boolean nopeExists = false;</span>
+<span class="nc" id="L527">            int nopePlayed = discardPile.getNrNope();</span>
             // CHANGE
-<span class="nc" id="L525">            ArrayList&lt;Choice&gt; choices = new ArrayList&lt;Choice&gt;();</span>
-<span class="nc" id="L526">            choices.add(new Choice(&quot;\nPlay nope&quot;, &quot;Press &lt;Enter&gt;&quot;));</span>
-<span class="nc" id="L527">            choices.add(new Choice(&quot;\nDont play nope&quot;, &quot;wait&quot;));</span>
+<span class="nc" id="L529">            ArrayList&lt;Choice&gt; choices = new ArrayList&lt;Choice&gt;();</span>
+<span class="nc" id="L530">            choices.add(new Choice(&quot;\nPlay nope&quot;, &quot;Press &lt;Enter&gt;&quot;));</span>
+<span class="nc" id="L531">            choices.add(new Choice(&quot;\nDont play nope&quot;, &quot;wait&quot;));</span>
 
-<span class="nc bnc" id="L529" title="All 2 branches missed.">            for (Player p : allPlayers) {</span>
-<span class="nc bnc" id="L530" title="All 2 branches missed.">                if (p.getId() != currentPlayer.getId()) {</span>
-<span class="nc bnc" id="L531" title="All 2 branches missed.">                    if (p.getHand().containsCardWithName(&quot;Nope&quot;)) { // only give the option to interrupt to those who</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">            for (Player p : allPlayers) {</span>
+<span class="nc bnc" id="L534" title="All 2 branches missed.">                if (p.getId() != currentPlayer.getId()) {</span>
+<span class="nc bnc" id="L535" title="All 2 branches missed.">                    if (p.getHand().containsCardWithName(&quot;Nope&quot;)) { // only give the option to interrupt to those who</span>
                         // have a
                         // Nope
-<span class="nc" id="L534">                        p.sendMessage(MessageFactory.createMessage(</span>
-<span class="nc" id="L535">                                &quot;Action to nope: Player &quot; + currentPlayer.getId() + &quot; played &quot; + cardPlayed.getName(),</span>
-<span class="nc" id="L536">                                null,</span>
-<span class="nc" id="L537">                                0));</span>
-<span class="nc" id="L538">                        p.sendMessage(MessageFactory.createMessage(&quot;Nope&quot;, choices, 1));</span>
-<span class="nc" id="L539">                        nopeExists = true;</span>
-<span class="nc" id="L540">                        completionService.submit(new interactableCardThread(p));</span>
+<span class="nc" id="L538">                        p.sendMessage(MessageFactory.createMessage(</span>
+<span class="nc" id="L539">                                &quot;Action to nope: Player &quot; + currentPlayer.getId() + &quot; played &quot; + cardPlayed.getName(),</span>
+                                null,
+                                0));
+<span class="nc" id="L542">                        p.sendMessage(MessageFactory.createMessage(&quot;Nope&quot;, choices, 1));</span>
+<span class="nc" id="L543">                        nopeExists = true;</span>
+<span class="nc" id="L544">                        completionService.submit(new interactableCardThread(p));</span>
                     }
                 }
-            }
-<span class="nc bnc" id="L544" title="All 2 branches missed.">            if (nopeExists) {</span>
-<span class="nc" id="L545">                Player nopePlayer = completionService.take().get();</span>
-<span class="nc" id="L546">                threadpool.shutdownNow();</span>
-<span class="nc bnc" id="L547" title="All 2 branches missed.">                if (nopePlayer != null) {</span>
-<span class="nc" id="L548">                    Card nopeCard = nopePlayer.getHand().returnSpecificCardByName(&quot;Nope&quot;);</span>
-<span class="nc" id="L549">                    nopeCard.action(discardPile, drawPile, nopePlayer, nopePlayer);</span>
-<span class="nc" id="L550">                    Message playerPlayedNope = MessageFactory.createMessage(</span>
-<span class="nc" id="L551">                            &quot;Player &quot; + nopePlayer.getId() + &quot; played a Nope Card\n&quot;, null, 0);</span>
+<span class="nc" id="L547">            }</span>
+<span class="nc bnc" id="L548" title="All 2 branches missed.">            if (nopeExists) {</span>
+<span class="nc" id="L549">                Player nopePlayer = completionService.take().get();</span>
+<span class="nc" id="L550">                threadpool.shutdownNow();</span>
+<span class="nc bnc" id="L551" title="All 2 branches missed.">                if (nopePlayer != null) {</span>
+<span class="nc" id="L552">                    Card nopeCard = nopePlayer.getHand().returnSpecificCardByName(&quot;Nope&quot;);</span>
+<span class="nc" id="L553">                    nopeCard.action(discardPile, drawPile, nopePlayer, nopePlayer);</span>
+<span class="nc" id="L554">                    Message playerPlayedNope = MessageFactory.createMessage(</span>
+<span class="nc" id="L555">                            &quot;Player &quot; + nopePlayer.getId() + &quot; played a Nope Card\n&quot;, null, 0);</span>
 
-<span class="nc bnc" id="L553" title="All 2 branches missed.">                    if (discardPile.getNrNope() &gt; nopePlayed) {</span>
-<span class="nc" id="L554">                        notifyAllPlayers(currentPlayer, playerPlayedNope, playerPlayedNope);</span>
-<span class="nc" id="L555">                        interactCardPlayed(nopePlayer, nopeCard);</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">                    if (discardPile.getNrNope() &gt; nopePlayed) {</span>
+<span class="nc" id="L558">                        notifyAllPlayers(currentPlayer, playerPlayedNope, playerPlayedNope);</span>
+<span class="nc" id="L559">                        interactCardPlayed(nopePlayer, nopeCard);</span>
                     }
                 }
             }
@@ -560,31 +564,36 @@ public class GameLogic {
             // Bots not yet implemented
         }
 
-<span class="nc" id="L563">    }</span>
+<span class="nc" id="L567">    }</span>
 
     public void dealCards() {
-<span class="nc bnc" id="L566" title="All 2 branches missed.">        for (Player player : allPlayers) {</span>
-<span class="nc" id="L567">            player.getHand().add(CardsFactory.createCard(&quot;Defuse&quot;), 0);</span>
-<span class="nc bnc" id="L568" title="All 2 branches missed.">            for (int i = 0; i &lt; 7; i++) {</span>
-<span class="nc" id="L569">                player.getHand().add(drawPile.removeAndDistributeCards(), 0);</span>
+<span class="nc bnc" id="L570" title="All 2 branches missed.">        for (Player player : allPlayers) {</span>
+<span class="nc bnc" id="L571" title="All 2 branches missed.">            for (int i = 0; i &lt; 7; i++) {</span>
+<span class="nc" id="L572">                player.getHand().add(drawPile.removeAndDistributeCards(), 0);</span>
             }
-        }
-<span class="nc" id="L572">    }</span>
+<span class="nc" id="L574">        }</span>
+<span class="nc" id="L575">    }</span>
+
+    public void dealDefuseCards() {
+<span class="nc bnc" id="L578" title="All 2 branches missed.">        for (Player player : allPlayers) {</span>
+<span class="nc" id="L579">            player.getHand().add(CardsFactory.createCard(&quot;Defuse&quot;), 0);</span>
+<span class="nc" id="L580">        }</span>
+<span class="nc" id="L581">    }</span>
 
     public Server getServer() {
-<span class="nc" id="L575">        return server;</span>
+<span class="nc" id="L584">        return server;</span>
     }
 
     public MainDeck getDrawPile() {
-<span class="nc" id="L579">        return drawPile;</span>
+<span class="nc" id="L588">        return drawPile;</span>
     }
 
     public Player getCurrentPlayer() {
-<span class="nc" id="L583">        return currentPlayer;</span>
+<span class="nc" id="L592">        return currentPlayer;</span>
     }
 
     public void setCurrentPlayer(Player currentPlayer) {
-<span class="nc" id="L587">        this.currentPlayer = currentPlayer;</span>
-<span class="nc" id="L588">    }</span>
+<span class="nc" id="L596">        this.currentPlayer = currentPlayer;</span>
+<span class="nc" id="L597">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

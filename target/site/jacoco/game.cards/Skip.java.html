@@ -10,11 +10,11 @@ public class Skip implements Card {
 	private String description;
 	private boolean ableToTarget;
 
-<span class="fc" id="L13">	public Skip() {</span>
-<span class="fc" id="L14">		this.name = &quot;Skip&quot;;</span>
-<span class="fc" id="L15">		this.description = &quot;(Immediately end your turn without drawing a card)&quot;;</span>
-<span class="fc" id="L16">		this.ableToTarget = false;</span>
-<span class="fc" id="L17">	}</span>
+<span class="nc" id="L13">	public Skip() {</span>
+<span class="nc" id="L14">		this.name = &quot;Skip&quot;;</span>
+<span class="nc" id="L15">		this.description = &quot;(Immediately end your turn without drawing a card)&quot;;</span>
+<span class="nc" id="L16">		this.ableToTarget = false;</span>
+<span class="nc" id="L17">	}</span>
 
 	@Override
 	public boolean isAbleToTarget() {
@@ -23,10 +23,10 @@ public class Skip implements Card {
 
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
-<span class="fc" id="L26">		player.sendMessage(MessageFactory.createMessage(&quot;Skip&quot;, null, 0));</span>
-<span class="fc" id="L27">		player.setNumberOfTurns(player.getNumberOfTurns() - 1);</span>
-<span class="pc bpc" id="L28" title="1 of 2 branches missed.">		if (player.getNumberOfTurns() == 0) {</span>
-<span class="fc" id="L29">			return target;</span>
+<span class="nc" id="L26">		player.sendMessage(MessageFactory.createMessage(&quot;Skip&quot;, null, 0));</span>
+<span class="nc" id="L27">		player.setNumberOfTurns(player.getNumberOfTurns() - 1);</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">		if (player.getNumberOfTurns() == 0) {</span>
+<span class="nc" id="L29">			return target;</span>
 		} else {
 <span class="nc" id="L31">			return player;</span>
 		}
@@ -34,7 +34,7 @@ public class Skip implements Card {
 
 	@Override
 	public String getName() {
-<span class="fc" id="L37">		return this.name;</span>
+<span class="nc" id="L37">		return this.name;</span>
 	}
 
 	@Override

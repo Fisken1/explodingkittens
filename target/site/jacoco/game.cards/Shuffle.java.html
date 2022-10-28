@@ -9,11 +9,11 @@ public class Shuffle implements Card {
 	private String description;
 	private boolean ableToTarget;
 
-<span class="fc" id="L12">	public Shuffle() {</span>
-<span class="fc" id="L13">		this.name = &quot;Shuffle&quot;;</span>
-<span class="fc" id="L14">		this.description = &quot;(Shuffle the Draw Pile thoroughly)&quot;;</span>
-<span class="fc" id="L15">		this.ableToTarget = false;</span>
-<span class="fc" id="L16">	}</span>
+<span class="nc" id="L12">	public Shuffle() {</span>
+<span class="nc" id="L13">		this.name = &quot;Shuffle&quot;;</span>
+<span class="nc" id="L14">		this.description = &quot;(Shuffle the Draw Pile thoroughly)&quot;;</span>
+<span class="nc" id="L15">		this.ableToTarget = false;</span>
+<span class="nc" id="L16">	}</span>
 
 	@Override
 	public boolean isAbleToTarget() {
@@ -22,14 +22,14 @@ public class Shuffle implements Card {
 
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
-<span class="fc" id="L25">		drawPile.shuffle();</span>
-<span class="fc" id="L26">		player.sendMessage(MessageFactory.createMessage(&quot;Shuffle&quot;, null, 0));</span>
-<span class="fc" id="L27">		return player;</span>
+<span class="nc" id="L25">		drawPile.shuffle();</span>
+<span class="nc" id="L26">		player.sendMessage(MessageFactory.createMessage(&quot;Shuffle&quot;, null, 0));</span>
+<span class="nc" id="L27">		return player;</span>
 	}
 
 	@Override
 	public String getName() {
-<span class="fc" id="L32">		return this.name;</span>
+<span class="nc" id="L32">		return this.name;</span>
 	}
 
 	@Override

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
-import communication.messages.Choice;
-import factory.CardsFactory;
 import game.cards.Card;
+import game.cards.CardsFactory;
+import messages.Choice;
 
 public class MainDeck implements Deck {
 
@@ -16,6 +16,14 @@ public class MainDeck implements Deck {
 		this.Cards = new ArrayList<Card>();
 	}
 
+	/**
+	 * @param playerSize the amount of players in the game
+	 * @param expansions the current expansions you want to play with
+	 * 
+	 *                   Creates a deck with the core expansion in mind then you can
+	 *                   add more code later to alter the deck with future cards.
+	 *                   Uses the CardsFactory to create cards to add to the deck.
+	 */
 	public void populateDeck(int playerSize, ArrayList<String> expansions) {
 		if (expansions.contains("Exploding kittens")) {
 			if (playerSize > 4)
@@ -70,12 +78,21 @@ public class MainDeck implements Deck {
 		}
 	}
 
+	/**
+	 * @return the top card of the deck
+	 */
 	public Card removeAndDistributeCards() {
 		Card toRemove = this.Cards.get(0);
 		this.Cards.remove(0);
 		return toRemove;
 	}
 
+	/**
+	 * @param playerSize the amount of players in the game
+	 * 
+	 *                   populates the deck with exploding kittens based on
+	 *                   playerSize
+	 */
 	public void populateDeckWithExplodingKittens(int playerSize) {
 		for (int i = 1; i < playerSize; i++) {
 			add(CardsFactory.createCard("ExplodingKitten"), 0);
@@ -83,6 +100,9 @@ public class MainDeck implements Deck {
 
 	}
 
+	/**
+	 * @return the top 3 cards if the deck
+	 */
 	public ArrayList<Choice> topThreeCards() {
 		ArrayList<Choice> topThreeCards = new ArrayList<Choice>();
 		int size;
@@ -102,10 +122,19 @@ public class MainDeck implements Deck {
 		return topThreeCards;
 	}
 
+	/**
+	 * shuffles the deck
+	 */
 	public void shuffle() {
 		Collections.shuffle(this.Cards);
 	}
 
+	/**
+	 * @return all the card names as a ArrayList of Choices
+	 * 
+	 *         Used when starting up the game to get a ArrayList of all the possible
+	 *         cards you can get based on the deck
+	 */
 	public ArrayList<Choice> allCardNames() {
 		ArrayList<String> tempNames = new ArrayList<String>();
 		ArrayList<Choice> allCardNames = new ArrayList<Choice>();
@@ -120,17 +149,17 @@ public class MainDeck implements Deck {
 		return allCardNames;
 	}
 
-
+	@Override
 	public void add(Card card, int position) {
 		this.Cards.add(position, card);
 	}
 
-
+	@Override
 	public int getCurrentSize() {
 		return Cards.size();
 	}
 
-
+	@Override
 	public ArrayList<Card> getCards() {
 		return this.Cards;
 	}

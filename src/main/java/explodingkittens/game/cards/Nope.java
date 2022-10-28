@@ -20,6 +20,15 @@ public class Nope implements Card {
 		return ableToTarget;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+	 * player.Player, player.Player)
+	 * 
+	 * Discards the card then returnes null as the player whos turn it will be is
+	 * handled elsewhere!
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		discardPile.add(this, 0);

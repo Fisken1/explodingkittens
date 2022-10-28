@@ -1,8 +1,8 @@
 package game.cards;
 
 import player.Player;
-import factory.MessageFactory;
 import game.decks.*;
+import messages.MessageFactory;
 
 public class Shuffle implements Card {
 	private String name;
@@ -20,6 +20,11 @@ public class Shuffle implements Card {
 		return ableToTarget;
 	}
 
+	/* (non-Javadoc)
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck, player.Player, player.Player)
+	 * 
+	 * shuffles the deck and informes the player that the deck has been shuffled 
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		drawPile.shuffle();

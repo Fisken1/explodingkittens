@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-import communication.network.Client;
+import network.Client;
 
 public class RunGame {
 	private static ArrayList<String> expansions = new ArrayList<String>(Arrays.asList("Exploding kittens"));

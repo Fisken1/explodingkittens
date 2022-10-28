@@ -11,6 +11,14 @@ public class interactableCardThread implements Callable<Player> {
         this.p = p;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.concurrent.Callable#call()
+     * A synchronized call used when alowing players to play nope cards. If the
+     * player press enter return that player else return null. If there is a error
+     * when reading from the player throw a exeption
+     */
     public synchronized Player call() {
         try {
             String nextMessage = p.readMessage(true);

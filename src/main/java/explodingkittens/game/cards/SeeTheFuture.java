@@ -1,7 +1,7 @@
 package game.cards;
 
-import factory.MessageFactory;
 import game.decks.*;
+import messages.MessageFactory;
 import player.Player;
 
 public class SeeTheFuture implements Card {
@@ -21,6 +21,15 @@ public class SeeTheFuture implements Card {
 		return ableToTarget;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see game.cards.Card#action(game.decks.DiscardPile, game.decks.MainDeck,
+	 * player.Player, player.Player)
+	 * 
+	 * Calls the method topThreeCards() to get the top 3 cards from the draw pile
+	 * when shows them to the player. return player.
+	 */
 	@Override
 	public Player action(DiscardPile discardPile, MainDeck drawPile, Player player, Player target) {
 		player.sendMessage(MessageFactory.createMessage(
